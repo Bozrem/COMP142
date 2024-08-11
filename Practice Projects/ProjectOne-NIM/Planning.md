@@ -25,6 +25,14 @@ I wanted to be able to parse the user input in a way that the user can put a bun
    * Also failed because I was using Scanner.next() instead of Scanner.nextLine()
 4. Use RegEx to split on any non-digit, then cast that String[] to int[]
 
+I also wanted to make sure that any pile that the user requested both existed and had a non-zero count of sticks
+1. Integrated a check into the while loop for empty piles
+   * Has an out-of-bounds exception when user enters something like -1
+2. Add an extra if statement at the bottom, using && to make it not run last check
+   * Bad solution, inefficient and still fails
+3. Try-Catch statement with print statements to tell user what they did wrong
+
 ## Resources
 Stack Overflow - [For each char in String](https://stackoverflow.com/questions/2451650/how-do-i-apply-the-for-each-loop-to-every-character-in-a-string)\
-ChatGPT - [Regular Expression to Extract Digits](https://chatgpt.com/share/21305ee5-d894-4b43-96ab-2ecbcb3b4bce)
+ChatGPT - [Regular Expression to Extract Digits](https://chatgpt.com/share/21305ee5-d894-4b43-96ab-2ecbcb3b4bce)\
+Stack Overflow - [Limit to Y/N using ReGex](https://stackoverflow.com/questions/38879288/how-to-restrict-a-user-to-enter-only-single-character-i-e-y-and-n-using-a-re)

@@ -40,4 +40,11 @@ public class Pile {
         }
         return false;
     }
+
+    public static boolean areEmpty(Pile[] piles){
+        for (Pile pile : piles){
+            if (pile.getCount() != 0) return false;
+        }
+        return true;
+    }
 }
