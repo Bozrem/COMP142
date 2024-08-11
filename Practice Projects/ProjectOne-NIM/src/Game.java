@@ -61,8 +61,10 @@ public class Game {
             try{
                 if (piles[pile].getCount() != 0) break;
                 System.out.println("Cannot take from an empty pile!"); // prints when exists but empty
+                pile = -1; // Make sure while loop runs again
             } catch (RuntimeException e) {
                 System.out.println("Cannot take from non-existing pile!");
+                pile = -1; // Make sure while loop runs again
             }
         }
         return pile;
@@ -106,7 +108,7 @@ public class Game {
     Prints game instructions when the user wants them
      */
     private void printGameInstructions() throws InterruptedException {
-        int millisBetweenInstructions = 2000;
+        int millisBetweenInstructions = 3000;
 
         boolean userWantsInstructions = userYesOrNo("Would you like game instructions?");
         if (!userWantsInstructions) return;
