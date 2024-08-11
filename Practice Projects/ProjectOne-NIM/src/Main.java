@@ -8,9 +8,11 @@
 import java.util.Scanner;
 
 public class Main {
+
+    private static boolean debugMode;
+
     public static void main(String[] args) {
         boolean debugMode = Boolean.parseBoolean(args[0]);
-        if (debugMode) System.out.println("Running as debug");
 
         int[] pileSizes = getInfo();
 
@@ -19,7 +21,9 @@ public class Main {
             for (int pile : pileSizes) System.out.println(pile);
         }
 
-        //Game game = new Game(pileSizes, debugMode);
+        // TODO make this repeatable
+        Game game = new Game(pileSizes, debugMode);
+        int winner = game.play();
     }
 
     /*
