@@ -1,16 +1,17 @@
 import java.util.Scanner;
 
 public class Game {
-    private Pile[] piles;
-    private boolean debugMode;
-    private final int playerCount = 2;
+    private final Pile[] piles;
+    private final boolean debugMode;
+    private final int playerCount;
 
     /*
     Initializes a game object and sets up the piles
      */
-    Game(int[] piles, boolean debugMode){
+    Game(int[] piles, int playerCount, boolean debugMode){
         // Set variables
         this.piles = Pile.fromIntArray(piles);
+        this.playerCount = playerCount;
         this.debugMode = debugMode;
 
         // Provide game info to debug mode
@@ -36,10 +37,29 @@ public class Game {
         int activePlayer = playerCount;
         while (!Pile.areEmpty(piles)){
             activePlayer = changeActivePlayer(activePlayer);
-            printCurrentGame(activePlayer);
-            doPlayerMove();
+            doNextMove(activePlayer);
         }
         return activePlayer;
+    }
+
+    /*
+    Increases player number if not at the last one
+     */
+    private int changeActivePlayer(int currentPlayer){
+        if (currentPlayer == playerCount) return 1;
+        return currentPlayer + 1;
+    }
+
+    /*
+    Sees if next move should be a computer move
+     */
+    private void doNextMove(int player){
+        if (playerCount == 2 && player == 2){
+            //doComputerMove();
+            //return;
+        }
+        printCurrentGame(player);
+        doPlayerMove();
     }
 
     /*
@@ -52,12 +72,17 @@ public class Game {
         piles[pile].takeSticks(sticks);
     }
 
+    private void doComputerMove(){
+        // Still working on
+    }
+
     private int getValidPile(){
         Scanner scan = new Scanner(System.in);
         int pile = -1;
         while (pile <= 0 || pile > piles.length){
-            System.out.println("Which pile would you like to take from?");
+            System.out.print("Pile to take from: ");
             pile = scan.nextInt();
+
             try{
                 if (piles[pile].getCount() != 0) break;
                 System.out.println("Cannot take from an empty pile!"); // prints when exists but empty
@@ -67,6 +92,7 @@ public class Game {
                 pile = -1; // Make sure while loop runs again
             }
         }
+        if (debugMode) System.out.println("Selected pile " + pile);
         return pile;
     }
 
@@ -74,19 +100,11 @@ public class Game {
         Scanner scan = new Scanner(System.in);
         int sticks = -1;
         while (sticks < 0 || sticks > piles[pile].getCount()){
-            System.out.println("How many sticks would you like to take from Pile " + pile + "?");
+            System.out.print("Amount of sticks you want to take from Pile " + pile + ": ");
             sticks = scan.nextInt();
         }
+        if (debugMode) System.out.println("Taking " + sticks + " sticks");
         return sticks;
-    }
-
-
-    /*
-    Increases player number if not at the last one
-     */
-    private int changeActivePlayer(int currentPlayer){
-        if (currentPlayer == playerCount) return 1;
-        return currentPlayer + 1;
     }
 
     /*

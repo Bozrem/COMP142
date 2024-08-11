@@ -12,6 +12,22 @@ Each pile is its own object that has its own count variable with checking and ta
 ### Game Object
 By designing the Game as its own object, we can redesign the main function to start or replay games however we may want.\
 Each game will have an initialization function that takes pile counts, and will play the game from there.
+### Computer Strategy
+One of the challenge problems with this project is to create a computer to play against. 
+While I did find a source online of the perfect way to play Nim, I wanted the strategy to be my own design.\
+Here are the various methods I considered:
+1. Brute force - Simulate the games future for a given move
+   * Pros: I don't have to think hard about how to do this well
+   * Cons: Slow, bulky code, scales poorly
+2. Neural Network
+   * Pros: Fancy, adaptive to scenarios
+   * Cons: Difficult to build and train
+3. Find a winning pattern
+   * Pros: It's a mathematical game that can be probably solved with math
+   * Cons: Not easy math to figure out
+4. Set of rules to make decision
+   * Pros: Relatively easy to code
+   * Cons: Could be exploited if a gap in knowledge is found
 
 ## Questions
 #### What difficulties did you have to overcome?
