@@ -22,8 +22,8 @@ public class Main {
 
         // TODO make this repeatable
         Game game = new Game(pileSizes, debugMode);
-        int winner = game.play();
-        System.out.println("Congratulations Player " + winner + "!");
+        int loser = game.play();
+        System.out.println("\n\n\nPlayer " + loser + " Loses! :(");
     }
 
     /*

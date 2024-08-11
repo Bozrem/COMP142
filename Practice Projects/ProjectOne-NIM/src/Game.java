@@ -33,11 +33,11 @@ public class Game {
         }
 
         // Start a round if piles are not all empty
-        int activePlayer = 1;
+        int activePlayer = playerCount;
         while (!Pile.areEmpty(piles)){
+            activePlayer = changeActivePlayer(activePlayer);
             printCurrentGame(activePlayer);
             doPlayerMove();
-            activePlayer = changeActivePlayer(activePlayer);
         }
         return activePlayer;
     }
