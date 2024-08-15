@@ -99,7 +99,7 @@ public class Game {
     private int getValidSticks(int pile){
         Scanner scan = new Scanner(System.in);
         int sticks = -1;
-        while (sticks < 0 || sticks > piles[pile].getCount()){
+        while (sticks <= 0 || sticks > piles[pile].getCount()){
             System.out.print("Amount of sticks you want to take from Pile " + pile + ": ");
             sticks = scan.nextInt();
         }

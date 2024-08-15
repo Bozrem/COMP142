@@ -12,6 +12,11 @@ Each pile is its own object that has its own count variable with checking and ta
 ### Game Object
 By designing the Game as its own object, we can redesign the main function to start or replay games however we may want.\
 Each game will have an initialization function that takes pile counts, and will play the game from there.
+### Player Object
+To provide a simple interface that the Game object can print information to the player and get moves
+### Computer Object (Extending Player)
+Extending the player object allows the Computer object to fit nicely into the Player[] array while enabling more complex behavior for moves.
+
 ### Computer Strategy
 One of the challenge problems with this project is to create a computer to play against. 
 While I did find a source online of the perfect way to play Nim, I wanted the strategy to be my own design.\
@@ -28,6 +33,17 @@ Here are the various methods I considered:
 4. Set of rules to make decision
    * Pros: Relatively easy to code
    * Cons: Could be exploited if a gap in knowledge is found
+5. Tree
+   * Pros: Easy recursion, rules eliminate branches
+   * Cons: Still could be inefficient at scale
+
+#### Noted Patterns
+* Leaving an opponent a single pile will always allow them a win
+* Leaving an opponent only piles of 1 will win if odd number of piles, lose otherwise
+* Possible next move outcomes is the sum of current sticks
+  * 2, 3 can lead to 5 scenarios
+  * 3, 3, 3 can lead to 9 scenarios
+* 
 
 ## Questions
 #### What difficulties did you have to overcome?
