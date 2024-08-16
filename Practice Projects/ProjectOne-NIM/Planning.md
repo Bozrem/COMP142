@@ -1,7 +1,8 @@
-# NIM Game
-The goal of this project is to create a game of [Nim](https://en.wikipedia.org/wiki/Nim) in the command line interface.\
+# NeoNim Game
+The goal of this project is to create an advanced game of [Nim](https://en.wikipedia.org/wiki/Nim) in the command line interface.\
 Nim has two players, and our version has an initial 3 piles.\
-The goal is to take positive amounts of sticks from single piles in a way that forces your opponent to take the last stick
+The goal is to take positive amounts of sticks from single piles in a way that forces your opponent to take the last stick\
+It's called NeoNim because it extends the original intent of the game both in players and sticks (and because it sounds like neovim)
 
 ## Design
 I would like to integrate object-oriented design into the program, but the instructions say to only submit the Nim.java.\

@@ -9,17 +9,17 @@ import java.util.Scanner;
 
 public class Main {
 
-    private static boolean debugMode = false;
+    public static boolean debugMode = false;
     static int[] pileSizes;
     static int playerCount;
 
     public static void main(String[] args) {
         if (args.length > 0) debugMode = Boolean.parseBoolean(args[0]);
 
-        System.out.println("Welcome to Nim!");
+        System.out.println("Welcome to NeoNim!\n");
 
         getPlayers();
-        pileSizes = getPiles();
+        Pile.fromIntArray(getPiles());
 
         startGameLoop();
 
@@ -32,9 +32,8 @@ public class Main {
     public static void startGameLoop(){
         boolean playAnother = true;
         while (playAnother){
-            Game game = new Game(pileSizes, playerCount, debugMode);
-            int loser = game.play();
-            System.out.println("\n\n\nPlayer " + loser + " Loses! :(");
+            Game.playNewGame();
+            System.out.println("Player " + (Player.getActivePlayerNumber() + 1) + " Loses!\n\n");
             playAnother = askPlayAnother();
         }
     }
@@ -68,6 +67,7 @@ public class Main {
     public static int[] parsePileInput(String input){
         String[] pileStrings = input.split("\\D+");
 
+        // Converts remaining pure digit String array to int array
         int[] pileSizes = new int[pileStrings.length];
         for (int i = 0; i < pileStrings.length; i++){
             pileSizes[i] = Integer.parseInt(pileStrings[i]);
@@ -81,7 +81,18 @@ public class Main {
      */
     public static void getPlayers(){
         Scanner scan = new Scanner(System.in);
-        System.out.print("Amount of players (1 for against computer): ");
-        playerCount = scan.nextInt();
+        System.out.println("NeoNim allows for a wide variety of player and pile options!");
+        System.out.println("You can play both with other people and against computers.");
+        System.out.println("Try 1 human 1 computer for a more classic game.\n");
+        int humans = -1;
+        int computers = -1;
+        while (humans < 0 || computers < 0 || computers + humans < 2){
+            System.out.print("Amount of human players: ");
+            humans = scan.nextInt();
+            System.out.print("Amount of computer opponents: ");
+            computers = scan.nextInt();
+        }
+        System.out.println(); // To space out before pile sizes
+        Player.initializePlayers(humans, computers);
     }
 }

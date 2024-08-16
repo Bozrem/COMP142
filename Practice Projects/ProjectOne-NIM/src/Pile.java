@@ -1,5 +1,6 @@
 public class Pile {
     private int count;
+    private static Pile[] piles;
 
     Pile(int size){
         this.count = size;
@@ -13,38 +14,42 @@ public class Pile {
     }
 
     /*
-    Setter function for count
-     */
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    /*
     Converts an integer array with pile sizes to Pile[]
      */
-    static Pile[] fromIntArray(int[] pileSizes){
-        Pile[] piles = new Pile[pileSizes.length];
+    static void fromIntArray(int[] pileSizes){
+        piles = new Pile[pileSizes.length];
         for (int i = 0; i < pileSizes.length; i++){
             piles[i] = new Pile(pileSizes[i]);
         }
-        return piles;
     }
 
     /*
     Tries to remove a number of sticks from the pile. Returns false if not possible
      */
-    public boolean takeSticks(int sticks){
+    public void takeSticks(int sticks){
         if (count >= sticks){
             count -= sticks;
-            return true;
         }
-        return false;
     }
 
-    public static boolean areEmpty(Pile[] piles){
+    public static boolean areEmpty(){
         for (Pile pile : piles){
             if (pile.getCount() != 0) return false;
         }
         return true;
+    }
+
+    public static Pile[] getPiles(){
+        return piles;
+    }
+
+    public static void printPiles(){
+        for (int i = 0; i < piles.length; i++){
+            System.out.print(i + ":  ");
+            for (int e = 0; e < piles[i].getCount(); e++){
+                System.out.print("| ");
+            }
+            System.out.println(); // Make new line after each pile
+        }
     }
 }
