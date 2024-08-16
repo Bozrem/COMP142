@@ -4,17 +4,13 @@ public class Player {
     public static Player[] players;
     private static int activePlayer = -1; // advances to player 0 on first turn
 
-    Player(){
-        // Doesn't really need to do anything but exist
-    }
-
     /*
     Prompts the player to make a move, modifies the pile accordingly
      */
-    public void makeMove(Pile[] piles){
+    public void makeMove(){
         printGame();
 
-        Pile pile = getValidPile(piles);
+        Pile pile = getValidPile();
         int sticks = getValidSticks(pile);
         pile.takeSticks(sticks);
     }
@@ -26,8 +22,9 @@ public class Player {
         Pile.printPiles();
     }
 
-    private Pile getValidPile(Pile[] piles){
+    private Pile getValidPile(){
         Scanner scan = new Scanner(System.in);
+        Pile[] piles = Pile.getPiles();
         int pile = -1;
         while (pile <= 0 || pile > piles.length){
             System.out.print("Pile to take from: ");

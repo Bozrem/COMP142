@@ -1,13 +1,11 @@
 import java.util.Scanner;
 
 public class Game {
-
     public static void playNewGame() {
         printGameInstructions();
-        // TODO add end game condition and make it loop
         while (!Pile.areEmpty()){
             Player.advanceTurn();
-            Player.getActivePlayer().makeMove(Pile.getPiles());
+            Player.getActivePlayer().makeMove();
         }
     }
 

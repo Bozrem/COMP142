@@ -8,10 +8,7 @@
 import java.util.Scanner;
 
 public class Main {
-
     public static boolean debugMode = false;
-    static int[] pileSizes;
-    static int playerCount;
 
     public static void main(String[] args) {
         if (args.length > 0) debugMode = Boolean.parseBoolean(args[0]);
@@ -33,7 +30,7 @@ public class Main {
         boolean playAnother = true;
         while (playAnother){
             Game.playNewGame();
-            System.out.println("Player " + (Player.getActivePlayerNumber() + 1) + " Loses!\n\n");
+            System.out.println("\nPlayer " + (Player.getActivePlayerNumber() + 1) + " Loses!\n\n");
             playAnother = askPlayAnother();
         }
     }
@@ -45,7 +42,7 @@ public class Main {
         boolean playAnother = Game.userYesOrNo("Good Game! Would you like to play another?");
         if (!playAnother) return false;
         boolean changePiles = Game.userYesOrNo("Would you like to change the pile sizes?");
-        if (changePiles) pileSizes = getPiles();
+        if (changePiles) getPiles();
         boolean changePlayers = Game.userYesOrNo("Would you like to change the amount of players?");
         if (changePlayers) getPlayers();
         return true;
