@@ -38,13 +38,12 @@ Here are the various methods I considered:
    * Pros: Easy recursion, rules eliminate branches
    * Cons: Still could be inefficient at scale
 
-#### Noted Patterns
-* Leaving an opponent a single pile will always allow them a win
-* Leaving an opponent only piles of 1 will win if odd number of piles, lose otherwise
-* Possible next move outcomes is the sum of current sticks
-  * 2, 3 can lead to 5 scenarios
-  * 3, 3, 3 can lead to 9 scenarios
-* 
+Here is what I'm doing for my computer player.
+#### Level 1: Stupid
+All it does it take the next available stick.
+#### Level 2: Tree
+Applies this if pile numbers are within a computable threshold.\
+If its outside computable threshold, it applies Level 1 until its within range. Read more about my tree design in
 
 ## Questions
 #### What difficulties did you have to overcome?
@@ -64,6 +63,8 @@ I also wanted to make sure that any pile that the user requested both existed an
 2. Add an extra if statement at the bottom, using && to make it not run last check
    * Bad solution, inefficient and still fails
 3. Try-Catch statement with print statements to tell user what they did wrong
+
+I really wanted to find the mathematical way to win this game, so I simulated many scenarios
 
 ## Resources
 Stack Overflow - [For each char in String](https://stackoverflow.com/questions/2451650/how-do-i-apply-the-for-each-loop-to-every-character-in-a-string)\

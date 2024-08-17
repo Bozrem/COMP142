@@ -1,4 +1,6 @@
 public class Computer extends Player {
+    MoveTree currentTree;
+
 
     /*
     Controller to decide what kind of move to make. Makes it easier for other classes to call it
@@ -46,6 +48,11 @@ public class Computer extends Player {
             }
         }
         System.out.println("Unable to make any valid moves");
+    }
+
+    public void buildTree(){
+        int[] intPiles = Pile.pilesToInts();
+        currentTree = new MoveTree(intPiles, playerID);
     }
 
 }

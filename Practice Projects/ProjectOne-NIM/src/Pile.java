@@ -52,4 +52,12 @@ public class Pile {
             System.out.println(); // Make new line after each pile
         }
     }
+
+    public static int[] pilesToInts(){
+        int[] intPiles = new int[piles.length];
+        for (int i = 0; i < piles.length; i++){
+            intPiles[i] = piles[i].getCount();
+        }
+        return intPiles;
+    }
 }

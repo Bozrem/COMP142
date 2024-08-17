@@ -1,6 +1,7 @@
 import java.util.Scanner;
 
 public class Player {
+    public int playerID;
     public static Player[] players;
     private static int activePlayer = -1; // advances to player 0 on first turn
 
@@ -73,9 +74,11 @@ public class Player {
         // TODO make these switch back and forth
         for (int i = 0; i < humans; i++){
             players[i] = new Player();
+            players[i].playerID = i;
         }
         for (int i = humans; i < humans + computers; i++){
             players[i] = new Computer();
+            players[i].playerID = i;
         }
     }
 
