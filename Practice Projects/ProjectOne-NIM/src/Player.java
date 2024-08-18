@@ -6,53 +6,42 @@ public class Player {
     private static int activePlayer = -1; // advances to player 0 on first turn
 
     /*
-    Prompts the player to make a move, modifies the pile accordingly
+    Prints the game, gets a valid move from the user, and plays it
      */
-    public void makeMove(){
-        printGame();
+    public void makeMove(Pile[] piles){
+        printGame(piles);
 
-        Pile pile = getValidPile();
-        int sticks = getValidSticks(pile);
-        pile.takeSticks(sticks);
+        Move move = getUserMove(piles);
+        if (!move.makeMove(piles)) System.out.println("Move failed to execute. Was not viable");
     }
 
-    private void printGame(){
+    /*
+    Gets user input for a move and verifies that it can be done
+     */
+    private Move getUserMove(Pile[] piles){
+        Scanner scan = new Scanner(System.in);
+        Move move = new Move(-1, -1);
+
+        while (!move.isMoveViable(piles)){
+            System.out.print("Pile to take from: ");
+            int pile = scan.nextInt();
+            System.out.print("Amount of sticks you want to take: ");
+            int sticks = scan.nextInt();
+
+            move = new Move(pile, sticks);
+        }
+
+        return move;
+    }
+
+    /*
+    Print out game info for the player to make a decision
+     */
+    private void printGame(Pile[] piles){
         System.out.println("\n\n\n"); // To space it nicely
         System.out.println("It is Player " + (activePlayer + 1) + "'s turn");
         System.out.println("Current Board:");
-        Pile.printPiles();
-    }
-
-    private Pile getValidPile(){
-        Scanner scan = new Scanner(System.in);
-        Pile[] piles = Pile.getPiles();
-        int pile = -1;
-        while (pile <= 0 || pile > piles.length){
-            System.out.print("Pile to take from: ");
-            pile = scan.nextInt();
-
-            try{
-                if (piles[pile].getCount() != 0) break;
-                System.out.println("Cannot take from an empty pile!"); // prints when exists but empty
-                pile = -1; // Make sure while loop runs again
-            } catch (RuntimeException e) {
-                System.out.println("Cannot take from non-existing pile!");
-                pile = -1; // Make sure while loop runs again
-            }
-        }
-        if (Main.debugMode) System.out.println("Selected pile " + pile);
-        return piles[pile];
-    }
-
-    private int getValidSticks(Pile pile){
-        Scanner scan = new Scanner(System.in);
-        int sticks = -1;
-        while (sticks <= 0 || sticks > pile.getCount()){
-            System.out.print("Amount of sticks you want to take: ");
-            sticks = scan.nextInt();
-        }
-        if (Main.debugMode) System.out.println("Taking " + sticks + " sticks");
-        return sticks;
+        Pile.printPiles(piles);
     }
 
     /*
@@ -62,6 +51,9 @@ public class Player {
         return players[activePlayer];
     }
 
+    /*
+    Returns the player number as an integer
+     */
     public static int getActivePlayerNumber(){
         return activePlayer;
     }

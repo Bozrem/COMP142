@@ -1,31 +1,90 @@
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class MoveTree {
-    private Set<MoveTree> subTrees = new HashSet<>();
-    private int[] piles;
+    public final Move moveFromParent;
+    private List<MoveTree> subTrees = new ArrayList<>();
+    private final Pile[] parentPiles;
+    private final Pile[] piles;
     private final int player;
+    private final int depth;
 
-    MoveTree(int[] piles, int player){
+    MoveTree(Pile[] parentPiles, int player, Move moveFromParent, int depth){
+        this.moveFromParent = moveFromParent;
         this.player = player;
-        this.piles = piles;
+        this.parentPiles = deepClonePiles(parentPiles); // Deep clone here
+        if (moveFromParent != null)
+            piles = moveFromParent.getPilesAfterMove(this.parentPiles);
+        else
+            piles = this.parentPiles.clone();
+        this.depth = depth;
+
+        if (Main.debugMode){
+            System.out.println("Initialized new Movetree under player " + player + " at depth " + depth);
+            if (moveFromParent != null)
+                System.out.println("Move was " + moveFromParent.getSticks() + " sticks from pile " + moveFromParent.getPile());
+            Pile.printPiles(this.piles);
+        }
         populateChildren();
     }
 
+    private Pile[] deepClonePiles(Pile[] originalPiles) {
+        Pile[] clone = new Pile[originalPiles.length];
+        for (int i = 0; i < originalPiles.length; i++) {
+            clone[i] = new Pile(originalPiles[i].getCount()); // Assuming Pile has a constructor that takes the count
+        }
+        return clone;
+    }
+
+
     private void populateChildren(){
-        for (int pile = 0; pile < piles.length; pile++){
-            for (int sticks = 1; sticks < piles[pile]; sticks++){
-                int[] childPiles = piles.clone();
-                childPiles[pile] = sticks;
-                subTrees.add(new MoveTree(childPiles, simulateAdvanceTurn()));
+        List<Move> availableMoves = Move.getAvailableMoves(piles.clone());
+        for (Move move : availableMoves){
+            MoveTree newChild = new MoveTree(piles, getNextPlayer(), move, depth+1);
+            subTrees.add(newChild);
+        }
+    }
+
+    public Move getMove(){
+        float leastLossChance = 2;
+        MoveTree bestChild = subTrees.get(0);
+        for (MoveTree child : subTrees){
+            if (Main.debugMode){
+                System.out.println();
+                System.out.println("Old: " + bestChild.moveFromParent.getSticks() + " sticks from pile " + bestChild.moveFromParent.getPile());
+                System.out.println("Old next piles " + Pile.pilesToString(bestChild.piles.clone()));
+                System.out.println("Old Loss array: " + printLossArray(bestChild.getLosses()));
+                System.out.println("New: " + child.moveFromParent.getSticks() + " sticks from pile " + child.moveFromParent.getPile());
+                System.out.println("New next piles " + Pile.pilesToString(child.piles.clone()));
+                System.out.println("New Loss array: " + printLossArray(child.getLosses()));
+            }
+            float childChance = chanceFromLossArray(child.getLosses());
+            if (childChance < leastLossChance){
+                leastLossChance = childChance;
+                bestChild = child;
             }
         }
+        return bestChild.moveFromParent;
+    }
+
+    // TODO remove temp function
+    private static String printLossArray(int[] losses){
+        String lossString = "";
+        for (int loss : losses){
+            lossString += (loss + ", ");
+        }
+        return lossString;
+    }
+
+    private float chanceFromLossArray(int[] losses){
+        int totalLosses = 0;
+        for (int playerLosses : losses) totalLosses += playerLosses;
+        return (float)losses[player] / totalLosses;
     }
 
     /*
     For use of passing the next player down to child nodes
      */
-    private int simulateAdvanceTurn(){
+    private int getNextPlayer(){
         if (player < Player.players.length - 1) {
             return (player+1);
         }
@@ -57,7 +116,7 @@ public class MoveTree {
      */
     private boolean isLoss(){
         int total = 0;
-        for (int pile : piles) total += pile;
+        for (Pile pile : piles) total += pile.getCount();
         return total == 1;
     }
 
@@ -65,5 +124,7 @@ public class MoveTree {
         // TODO add functionality to print a trees children
     }
 
-
+    public Pile[] getPiles(){
+        return piles;
+    }
 }

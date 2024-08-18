@@ -16,9 +16,9 @@ public class Main {
         System.out.println("Welcome to NeoNim!\n");
 
         getPlayers();
-        Pile.fromIntArray(getPiles());
+        Pile[] piles = Pile.fromIntArray(Pile.fromUserInput());
 
-        startGameLoop();
+        startGameLoop(piles);
 
         System.out.println("\nThanks for playing!");
     }
@@ -26,10 +26,10 @@ public class Main {
     /*
     Begins the game loop to start a game and ask if another should be played after
      */
-    public static void startGameLoop(){
+    public static void startGameLoop(Pile[] piles){
         boolean playAnother = true;
         while (playAnother){
-            Game.playNewGame();
+            Game.playNewGame(piles);
             System.out.println("\nPlayer " + (Player.getActivePlayerNumber() + 1) + " Loses!\n\n");
             playAnother = askPlayAnother();
         }
@@ -41,36 +41,12 @@ public class Main {
     public static boolean askPlayAnother(){
         boolean playAnother = Game.userYesOrNo("Good Game! Would you like to play another?");
         if (!playAnother) return false;
-        boolean changePiles = Game.userYesOrNo("Would you like to change the pile sizes?");
-        if (changePiles) getPiles();
+        //boolean changePiles = Game.userYesOrNo("Would you like to change the pile sizes?");
+        //if (changePiles) ;
+        // TODO fix this
         boolean changePlayers = Game.userYesOrNo("Would you like to change the amount of players?");
         if (changePlayers) getPlayers();
         return true;
-    }
-
-    /*
-    Provides the user interface to set up the game, returning the parsed input as the pile sizes
-     */
-    public static int[] getPiles() {
-        Scanner scan = new Scanner(System.in);
-        System.out.println("Please enter the pile sizes you would like to play with, separated by commas:");
-        String input = scan.nextLine();
-        return parsePileInput(input);
-    }
-
-    /*
-    Parses a user input by splitting by any non-digits using Regular Expressions, then converts the String[] into int[]
-     */
-    public static int[] parsePileInput(String input){
-        String[] pileStrings = input.split("\\D+");
-
-        // Converts remaining pure digit String array to int array
-        int[] pileSizes = new int[pileStrings.length];
-        for (int i = 0; i < pileStrings.length; i++){
-            pileSizes[i] = Integer.parseInt(pileStrings[i]);
-        }
-
-        return pileSizes;
     }
 
     /*

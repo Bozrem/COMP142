@@ -1,11 +1,11 @@
 import java.util.Scanner;
 
 public class Game {
-    public static void playNewGame() {
+    public static void playNewGame(Pile[] piles) {
         printGameInstructions();
-        while (!Pile.areEmpty()){
+        while (!Pile.areEmpty(piles)){
             Player.advanceTurn();
-            Player.getActivePlayer().makeMove();
+            Player.getActivePlayer().makeMove(piles);
         }
     }
 
