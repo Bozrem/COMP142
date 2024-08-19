@@ -17,8 +17,9 @@ public class Move {
     }
 
     public Pile[] getPilesAfterMove(Pile[] piles){
-        piles[pile].takeSticks(sticks);
-        return piles;
+        Pile[] clonedPiles = Pile.deepClonePiles(piles);
+        clonedPiles[pile].takeSticks(sticks);
+        return clonedPiles;
     }
 
     /*

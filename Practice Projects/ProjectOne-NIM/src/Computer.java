@@ -1,14 +1,14 @@
 public class Computer extends Player {
-    MoveTree currentTree;
+    ParanoidMinimaxTree currentTree;
 
     /*
     Controller to decide what kind of move to make. Makes it easier for other classes to call it
      */
     @Override
     public void makeMove(Pile[] piles){
+        printGame(piles);
         buildTree(piles);
-        printGame(currentTree.getPiles());
-        Move move = getTreeMove();
+        Move move = currentTree.getMove();
         System.out.println("Computer " + playerID + " takes " + move.getSticks() + " sticks from Pile " + move.getPile());
         move.makeMove(piles);
     }
@@ -25,15 +25,10 @@ public class Computer extends Player {
         System.out.println("Computer is thinking...");
     }
 
-    private Move getTreeMove(){
-        return currentTree.getMove();
-    }
-
     /*
     Initializes the current tree, lets it build out its children
      */
     public void buildTree(Pile[] piles){
-        currentTree = new MoveTree(piles.clone(), playerID, null, 0);
+        currentTree = new ParanoidMinimaxTree(Pile.deepClonePiles(piles), null, playerID, playerID);
     }
-
 }
