@@ -32,6 +32,7 @@ public class Move {
             }
         }
         return availableMoves;
+        // TODO make this remove duplicates for optimization
     }
 
     /*

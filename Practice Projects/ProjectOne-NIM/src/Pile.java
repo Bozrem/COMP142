@@ -72,4 +72,12 @@ public class Pile {
         }
         return pileString;
     }
+
+    public static Pile[] deepClonePiles(Pile[] originalPiles) {
+        Pile[] clone = new Pile[originalPiles.length];
+        for (int i = 0; i < originalPiles.length; i++) {
+            clone[i] = new Pile(originalPiles[i].getCount()); // Assuming Pile has a constructor that takes the count
+        }
+        return clone;
+    }
 }

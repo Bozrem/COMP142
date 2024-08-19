@@ -43,7 +43,11 @@ Here is what I'm doing for my computer player.
 All it does it take the next available stick.
 #### Level 2: Tree
 Applies this if pile numbers are within a computable threshold.\
-If its outside computable threshold, it applies Level 1 until its within range. Read more about my tree design in
+If its outside computable threshold, it applies Level 1 until its within range. Read more about my tree design in TreeStrategy.md
+#### Level 3: Minimax Tree
+I initially didn't consider a Minimax-like algorithm because it breaks down at more than 2 players.
+However, after I wrote the level 2 tree, I did some research with ChatGPT that suggested a paranoid Minimax Algorithm.\
+You can read more about how I implemented this in Minimax.md
 
 ## Questions
 #### What difficulties did you have to overcome?

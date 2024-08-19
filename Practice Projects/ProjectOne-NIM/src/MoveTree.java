@@ -11,7 +11,7 @@ public class MoveTree {
     MoveTree(Pile[] parentPiles, int player, Move moveFromParent, int depth){
         this.moveFromParent = moveFromParent;
         this.player = player;
-        this.parentPiles = deepClonePiles(parentPiles); // Deep clone here
+        this.parentPiles = Pile.deepClonePiles(parentPiles); // Deep clone here
         if (moveFromParent != null)
             piles = moveFromParent.getPilesAfterMove(this.parentPiles);
         else
@@ -26,15 +26,6 @@ public class MoveTree {
         }
         populateChildren();
     }
-
-    private Pile[] deepClonePiles(Pile[] originalPiles) {
-        Pile[] clone = new Pile[originalPiles.length];
-        for (int i = 0; i < originalPiles.length; i++) {
-            clone[i] = new Pile(originalPiles[i].getCount()); // Assuming Pile has a constructor that takes the count
-        }
-        return clone;
-    }
-
 
     private void populateChildren(){
         List<Move> availableMoves = Move.getAvailableMoves(piles.clone());

@@ -1,5 +1,8 @@
 import java.util.Scanner;
 
+// TODO merge the functionality of this class with Main, or expand it to make things easier for other classes.
+// Could be able to keep Pile and Player info here, that way it could be changed from Main and still reset properly
+
 public class Game {
     public static void playNewGame(Pile[] piles) {
         printGameInstructions();
