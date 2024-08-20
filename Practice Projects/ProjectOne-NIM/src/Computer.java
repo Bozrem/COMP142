@@ -10,6 +10,7 @@ public class Computer extends Player {
         buildTree(piles);
         Move move = currentTree.getMove();
         System.out.println("Computer " + playerID + " takes " + move.getSticks() + " sticks from Pile " + move.getPile());
+        System.out.println("Searched " + ParanoidMinimaxTree.totalNodes + " possible future situations");
         move.makeMove(piles);
     }
 
@@ -29,6 +30,6 @@ public class Computer extends Player {
     Initializes the current tree, lets it build out its children
      */
     public void buildTree(Pile[] piles){
-        currentTree = new ParanoidMinimaxTree(Pile.deepClonePiles(piles), null, playerID, playerID);
+        currentTree = new ParanoidMinimaxTree(Pile.deepClonePiles(piles), null, playerID, playerID, 0);
     }
 }

@@ -13,6 +13,13 @@ public class Main {
     public static void main(String[] args) {
         if (args.length > 0) debugMode = Boolean.parseBoolean(args[0]);
 
+        /*
+        Future TODOs:
+        Build way to view the tree for more debugging
+        Unittests
+        Fix bug with play another game
+        Add AI difficulty selector
+         */
         System.out.println("Welcome to NeoNim!\n");
 
         getPlayers();

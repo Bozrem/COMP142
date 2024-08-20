@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 public class ParanoidMinimaxTree {
@@ -7,16 +8,20 @@ public class ParanoidMinimaxTree {
     List<ParanoidMinimaxTree> subTrees = new ArrayList<>();
     private final int activePlayer;
     private final int computerID;
+    public static int totalNodes = 0;
+    private final int treeID;
 
 
-    ParanoidMinimaxTree(Pile[] piles, Move moveFromParent, int activePlayer, int computerID){
+    ParanoidMinimaxTree(Pile[] piles, Move moveFromParent, int activePlayer, int computerID, int parentID){
         this.piles = Pile.deepClonePiles(piles);
         this.moveFromParent = moveFromParent;
         this.activePlayer = activePlayer;
         this.computerID = computerID;
+        treeID = totalNodes + 1;
+        totalNodes++;
 
         if (Main.debugMode){
-            System.out.println("\nInitialized new Movetree under player " + activePlayer);
+            System.out.println("\nInitialized new Movetree under player " + activePlayer + " from Parent node " + parentID);
             if (moveFromParent != null)
                 System.out.println("Move was " + moveFromParent.getSticks() + " sticks from pile " + moveFromParent.getPile());
             Pile.printPiles(this.piles);
@@ -29,9 +34,22 @@ public class ParanoidMinimaxTree {
         List<Move> availableMoves = Move.getAvailableMoves(Pile.deepClonePiles(piles));
         for (Move move : availableMoves){
             Pile[] pilesAfterMove = move.getPilesAfterMove(Pile.deepClonePiles(piles)); // Check what piles are after
-            if (!Pile.areEmpty(pilesAfterMove)){
-                // Only create a child if it doesn't lose
-                subTrees.add(new ParanoidMinimaxTree(pilesAfterMove, move, getNextPlayer(), computerID));
+
+            boolean isLosingMove = Pile.areEmpty(pilesAfterMove);
+            boolean arePilesDuplicates = false;
+            for (ParanoidMinimaxTree child : subTrees){
+                if (Pile.equalPiles(child.getPiles(), pilesAfterMove)){
+                    arePilesDuplicates = true;
+                    break;
+                }
+            }
+
+            if (!isLosingMove && !arePilesDuplicates){
+                // Only create a child if it doesn't lose and some variation of the piles does not already exist
+                if (Main.debugMode){
+
+                }
+                subTrees.add(new ParanoidMinimaxTree(pilesAfterMove, move, getNextPlayer(), computerID, treeID));
             }
         }
     }
@@ -47,8 +65,9 @@ public class ParanoidMinimaxTree {
                 bestMove = child.moveFromParent;
             }
         }
+        System.out.println("Computer moves towards best strength of " + bestStrength);
         return bestMove;
-    } // TODO Might break when it has to lose
+    }
 
     public int getStrength(){
         if (subTrees.isEmpty()){

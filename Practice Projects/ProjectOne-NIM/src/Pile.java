@@ -1,5 +1,7 @@
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Pile {
     private int count;
@@ -34,8 +36,6 @@ public class Pile {
         }
         return piles;
     }
-
-
 
     public static boolean areEmpty(Pile[] piles){
         for (Pile pile : piles){
@@ -79,5 +79,16 @@ public class Pile {
             clone[i] = new Pile(originalPiles[i].getCount()); // Assuming Pile has a constructor that takes the count
         }
         return clone;
+    }
+
+    public static boolean equalPiles(Pile[] pileOne, Pile[] pileTwo){
+        if (pileOne.length != pileTwo.length) return false;
+        Set<Integer> setOne = new HashSet<>();
+        Set<Integer> setTwo = new HashSet<>();
+        for (int i = 0; i < pileOne.length; i++){
+            setOne.add(pileOne[i].getCount());
+            setTwo.add(pileTwo[i].getCount());
+        }
+        return setOne.equals(setTwo);
     }
 }
