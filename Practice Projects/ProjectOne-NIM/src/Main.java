@@ -20,6 +20,14 @@ public class Main {
         Fix bug with play another game
         Add AI difficulty selector
          */
+
+        /*
+        Pile[] testPiles = Pile.fromIntArray(Pile.fromUserInput());
+        getPlayers();
+        ParanoidMinimaxTree testTree = new ParanoidMinimaxTree(testPiles, null, 1, 1, 0);
+        TreeViewer viewer = new TreeViewer(testTree);
+        viewer.browseTree();
+        */
         System.out.println("Welcome to NeoNim!\n");
 
         getPlayers();

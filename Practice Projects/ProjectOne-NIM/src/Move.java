@@ -52,4 +52,13 @@ public class Move {
     public int getSticks(){
         return sticks;
     }
+
+    @Override
+    public String toString() {
+        String string = "Take ";
+        string += sticks;
+        string += " from Pile ";
+        string += pile;
+        return string;
+    }
 }

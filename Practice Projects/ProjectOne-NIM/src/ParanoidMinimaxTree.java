@@ -3,13 +3,15 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class ParanoidMinimaxTree {
-    Pile[] piles;
+    private Pile[] piles;
     Move moveFromParent;
     List<ParanoidMinimaxTree> subTrees = new ArrayList<>();
-    private final int activePlayer;
-    private final int computerID;
+    public final int activePlayer;
+    public final int computerID;
     public static int totalNodes = 0;
-    private final int treeID;
+    public final int treeID;
+    public int strength;
+    public static Hashtable<Integer, ParanoidMinimaxTree> index = new Hashtable<>();
 
 
     ParanoidMinimaxTree(Pile[] piles, Move moveFromParent, int activePlayer, int computerID, int parentID){
@@ -19,6 +21,7 @@ public class ParanoidMinimaxTree {
         this.computerID = computerID;
         treeID = totalNodes + 1;
         totalNodes++;
+        index.put(treeID, this);
 
         if (Main.debugMode){
             System.out.println("\nInitialized new Movetree under player " + activePlayer + " from Parent node " + parentID);
@@ -35,7 +38,6 @@ public class ParanoidMinimaxTree {
         for (Move move : availableMoves){
             Pile[] pilesAfterMove = move.getPilesAfterMove(Pile.deepClonePiles(piles)); // Check what piles are after
 
-            boolean isLosingMove = Pile.areEmpty(pilesAfterMove);
             boolean arePilesDuplicates = false;
             for (ParanoidMinimaxTree child : subTrees){
                 if (Pile.equalPiles(child.getPiles(), pilesAfterMove)){
@@ -44,13 +46,13 @@ public class ParanoidMinimaxTree {
                 }
             }
 
-            if (!isLosingMove && !arePilesDuplicates){
-                // Only create a child if it doesn't lose and some variation of the piles does not already exist
-                if (Main.debugMode){
+            subTrees.add(new ParanoidMinimaxTree(pilesAfterMove, move, getNextPlayer(), computerID, treeID));
 
-                }
+            if (!arePilesDuplicates){
+                // Only create a child if some variation of the piles does not already exist
                 subTrees.add(new ParanoidMinimaxTree(pilesAfterMove, move, getNextPlayer(), computerID, treeID));
             }
+
         }
     }
 
@@ -70,6 +72,7 @@ public class ParanoidMinimaxTree {
     }
 
     public int getStrength(){
+        if (strength != 0) return strength;
         if (subTrees.isEmpty()){
             // Having no children means that this move doesn't have any other valid moves after, and is losing
             return strengthModifier(); // -1 if computer lost, 1 if other lost
@@ -83,6 +86,7 @@ public class ParanoidMinimaxTree {
             System.out.println("Sent up " + incrementStrength(bestStrength) + " for the following piles");
             Pile.printPiles(piles);
         }
+        strength = incrementStrength(bestStrength);
         return incrementStrength(bestStrength);
     }
 
@@ -127,8 +131,8 @@ public class ParanoidMinimaxTree {
     Adds a positive or negative skew based on which player loses
      */
     private int strengthModifier(){
-        if (activePlayer == computerID) return -1; // computer player lost
-        return 1; // somebody else lost
+        if (activePlayer == computerID) return 1; // Empty piles given to computer, opponent before them lost
+        return -1; // Computer lost on the round before
     }
 
     /*

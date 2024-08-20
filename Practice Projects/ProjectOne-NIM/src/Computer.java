@@ -8,6 +8,8 @@ public class Computer extends Player {
     public void makeMove(Pile[] piles){
         printGame(piles);
         buildTree(piles);
+        //TreeViewer viewer = new TreeViewer(currentTree);
+        //viewer.browseTree();
         Move move = currentTree.getMove();
         System.out.println("Computer " + playerID + " takes " + move.getSticks() + " sticks from Pile " + move.getPile());
         System.out.println("Searched " + ParanoidMinimaxTree.totalNodes + " possible future situations");
