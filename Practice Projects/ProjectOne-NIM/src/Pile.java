@@ -82,13 +82,19 @@ public class Pile {
     }
 
     public static boolean equalPiles(Pile[] pileOne, Pile[] pileTwo){
-        if (pileOne.length != pileTwo.length) return false;
-        Set<Integer> setOne = new HashSet<>();
-        Set<Integer> setTwo = new HashSet<>();
-        for (int i = 0; i < pileOne.length; i++){
-            setOne.add(pileOne[i].getCount());
-            setTwo.add(pileTwo[i].getCount());
+        return hashCodePiles(pileOne) == hashCodePiles(pileTwo);
+    }
+
+    public static int hashCodePiles(Pile[] piles){
+        return Arrays.hashCode(pilesAsSortedInt(piles));
+    }
+
+    public static int[] pilesAsSortedInt(Pile[] piles){
+        int[] asInt = new int[piles.length];
+        for (int i = 0; i < piles.length; i++){
+            asInt[i] = piles[i].getCount();
         }
-        return setOne.equals(setTwo);
+        Arrays.sort(asInt);
+        return asInt;
     }
 }

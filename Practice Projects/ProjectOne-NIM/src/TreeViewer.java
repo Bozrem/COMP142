@@ -30,6 +30,7 @@ public class TreeViewer {
              System.out.println("\nOption " + i + ": ");
              Pile.printPiles(tree.subTrees.get(i).getPiles());
              System.out.println("Child Strength: " + tree.subTrees.get(i).getStrength());
+             System.out.println("Child Hash: " + tree.subTrees.get(i).hashCode());
          }
      }
 

@@ -15,19 +15,15 @@ public class Main {
 
         /*
         Future TODOs:
-        Build way to view the tree for more debugging
+        Add pre-computed database
+            When a strength is computed, add it to the hashtable
+            When looking at creating more children, check if they've already been computed
+            If player data is stored with it, signs can be switched to be more effective
         Unittests
         Fix bug with play another game
         Add AI difficulty selector
          */
 
-        /*
-        Pile[] testPiles = Pile.fromIntArray(Pile.fromUserInput());
-        getPlayers();
-        ParanoidMinimaxTree testTree = new ParanoidMinimaxTree(testPiles, null, 1, 1, 0);
-        TreeViewer viewer = new TreeViewer(testTree);
-        viewer.browseTree();
-        */
         System.out.println("Welcome to NeoNim!\n");
 
         getPlayers();
@@ -42,26 +38,24 @@ public class Main {
     Begins the game loop to start a game and ask if another should be played after
      */
     public static void startGameLoop(Pile[] piles){
-        boolean playAnother = true;
-        while (playAnother){
-            Game.playNewGame(piles);
-            System.out.println("\nPlayer " + (Player.getActivePlayerNumber() + 1) + " Loses!\n\n");
-            playAnother = askPlayAnother();
-        }
+        Game.playNewGame(Pile.deepClonePiles(piles));
+        System.out.println("\nPlayer " + (Player.getActivePlayerNumber() + 1) + " Loses!\n\n");
+        askPlayAnother(piles);
     }
 
     /*
     Ask the user if they would like to play another game
      */
-    public static boolean askPlayAnother(){
+    public static void askPlayAnother(Pile[] piles){
         boolean playAnother = Game.userYesOrNo("Good Game! Would you like to play another?");
-        if (!playAnother) return false;
-        //boolean changePiles = Game.userYesOrNo("Would you like to change the pile sizes?");
-        //if (changePiles) ;
-        // TODO fix this
+        if (!playAnother) return;
+        boolean changePiles = Game.userYesOrNo("Would you like to change the pile sizes?");
+        if (changePiles){
+            piles = Pile.fromIntArray(Pile.fromUserInput());
+        }
         boolean changePlayers = Game.userYesOrNo("Would you like to change the amount of players?");
         if (changePlayers) getPlayers();
-        return true;
+        startGameLoop(piles);
     }
 
     /*

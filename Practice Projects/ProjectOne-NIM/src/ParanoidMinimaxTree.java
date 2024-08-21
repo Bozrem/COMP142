@@ -1,6 +1,4 @@
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
+import java.util.*;
 
 public class ParanoidMinimaxTree {
     private Pile[] piles;
@@ -12,6 +10,10 @@ public class ParanoidMinimaxTree {
     public final int treeID;
     public int strength;
     public static Hashtable<Integer, ParanoidMinimaxTree> index = new Hashtable<>();
+    private static Hashtable<Integer, Integer> computedStrengths = new Hashtable<>();
+    // Set up a hashtable with key being the tree and the value being the strength associated
+    // Set the tree equals method to compare piles and player things
+    // If the hashtable contains the key of the tree (using the tree equals method), set the strength and don't create its children
 
 
     ParanoidMinimaxTree(Pile[] piles, Move moveFromParent, int activePlayer, int computerID, int parentID){
@@ -34,6 +36,11 @@ public class ParanoidMinimaxTree {
     }
 
     private void populateChildren(){
+        if (computedStrengths.containsKey(this.hashCode())){
+            strength = computedStrengths.get(this.hashCode());
+            System.out.println("Precomputed Piles to be strength " + strength);
+            return;
+        } // Doesn't work because strengths get put there after all children have been populated
         List<Move> availableMoves = Move.getAvailableMoves(Pile.deepClonePiles(piles));
         for (Move move : availableMoves){
             Pile[] pilesAfterMove = move.getPilesAfterMove(Pile.deepClonePiles(piles)); // Check what piles are after
@@ -46,14 +53,12 @@ public class ParanoidMinimaxTree {
                 }
             }
 
-            subTrees.add(new ParanoidMinimaxTree(pilesAfterMove, move, getNextPlayer(), computerID, treeID));
-
             if (!arePilesDuplicates){
                 // Only create a child if some variation of the piles does not already exist
                 subTrees.add(new ParanoidMinimaxTree(pilesAfterMove, move, getNextPlayer(), computerID, treeID));
             }
-
         }
+        //getStrength();
     }
 
     public Move getMove(){
@@ -68,6 +73,7 @@ public class ParanoidMinimaxTree {
             }
         }
         System.out.println("Computer moves towards best strength of " + bestStrength);
+        System.out.println("Added " + computedStrengths.size() + " solutions to computed strengths");
         return bestMove;
     }
 
@@ -87,6 +93,7 @@ public class ParanoidMinimaxTree {
             Pile.printPiles(piles);
         }
         strength = incrementStrength(bestStrength);
+        computedStrengths.put(this.hashCode(), strength);
         return incrementStrength(bestStrength);
     }
 
@@ -147,5 +154,22 @@ public class ParanoidMinimaxTree {
 
     public Pile[] getPiles(){
         return piles;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() != ParanoidMinimaxTree.class) return false; // Object is type tree
+        ParanoidMinimaxTree otherTree = (ParanoidMinimaxTree) obj;
+        if (!Pile.equalPiles(this.piles, otherTree.piles)) return false; // Unequal piles
+        if (this.activePlayer != otherTree.activePlayer) return false; // Different persons turn
+        if (this.computerID != otherTree.computerID) return false; // Computer is a different player (for multi computer games)
+        return true;
+    }
+
+    // TODO implement hashcode way of doing equals method above
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Arrays.hashCode(Pile.pilesAsSortedInt(piles)), activePlayer, computerID); // sort so that 1, 1, 2 and 2, 1, 1 are the same
     }
 }
