@@ -1,3 +1,5 @@
+import com.sun.source.tree.Tree;
+
 import java.util.Scanner;
 
 public class Player {
@@ -27,7 +29,6 @@ public class Player {
             int pile = scan.nextInt();
             System.out.print("Amount of sticks you want to take: ");
             int sticks = scan.nextInt();
-
             move = new Move(pile, sticks);
         }
 
@@ -70,6 +71,19 @@ public class Player {
         }
         for (int i = humans; i < humans + computers; i++){
             players[i] = new Computer();
+            players[i].playerID = i;
+        }
+    }
+
+    public static void initializePlayersReverse(int humans, int computers){
+        players = new Player[humans + computers];
+        // TODO make these switch back and forth
+        for (int i = 0; i < computers; i++){
+            players[i] = new Computer();
+            players[i].playerID = i;
+        }
+        for (int i = humans; i < humans + computers; i++){
+            players[i] = new Player();
             players[i].playerID = i;
         }
     }

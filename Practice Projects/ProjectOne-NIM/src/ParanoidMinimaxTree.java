@@ -9,20 +9,18 @@ public class ParanoidMinimaxTree {
     public static int totalNodes = 0;
     public final int treeID;
     public int strength;
-    public static Hashtable<Integer, ParanoidMinimaxTree> index = new Hashtable<>();
-    private static Hashtable<Integer, Integer> computedStrengths = new Hashtable<>();
-    // Set up a hashtable with key being the tree and the value being the strength associated
-    // Set the tree equals method to compare piles and player things
-    // If the hashtable contains the key of the tree (using the tree equals method), set the strength and don't create its children
+    private final int depthFromCurrent;
+    public static Hashtable<Integer, ParanoidMinimaxTree> index = new Hashtable<>(); // Used for viewing tree
+    private static Hashtable<Integer, Integer> computedStrengths = new Hashtable<>(); // Used for not having to do same compute multiple times
 
-
-    ParanoidMinimaxTree(Pile[] piles, Move moveFromParent, int activePlayer, int computerID, int parentID){
+    ParanoidMinimaxTree(Pile[] piles, Move moveFromParent, int activePlayer, int computerID, int parentID, int depthFromCurrent){
         this.piles = Pile.deepClonePiles(piles);
         this.moveFromParent = moveFromParent;
         this.activePlayer = activePlayer;
         this.computerID = computerID;
         treeID = totalNodes + 1;
         totalNodes++;
+        this.depthFromCurrent = depthFromCurrent;
         index.put(treeID, this);
 
         if (Main.debugMode){
@@ -36,11 +34,12 @@ public class ParanoidMinimaxTree {
     }
 
     private void populateChildren(){
-        if (computedStrengths.containsKey(this.hashCode())){
+        if (computedStrengths.containsKey(this.hashCode()) && depthFromCurrent >= 1){
             strength = computedStrengths.get(this.hashCode());
-            System.out.println("Precomputed Piles to be strength " + strength);
+            if (Main.debugMode) System.out.println("Precomputed Piles to be strength " + strength);
             return;
-        } // Doesn't work because strengths get put there after all children have been populated
+        }
+
         List<Move> availableMoves = Move.getAvailableMoves(Pile.deepClonePiles(piles));
         for (Move move : availableMoves){
             Pile[] pilesAfterMove = move.getPilesAfterMove(Pile.deepClonePiles(piles)); // Check what piles are after
@@ -55,13 +54,14 @@ public class ParanoidMinimaxTree {
 
             if (!arePilesDuplicates){
                 // Only create a child if some variation of the piles does not already exist
-                subTrees.add(new ParanoidMinimaxTree(pilesAfterMove, move, getNextPlayer(), computerID, treeID));
+                subTrees.add(new ParanoidMinimaxTree(pilesAfterMove, move, getNextPlayer(), computerID, treeID, depthFromCurrent + 1));
             }
         }
-        //getStrength();
+        getStrength();
     }
 
     public Move getMove(){
+        populateChildren(); // Repopulate so that it populates the children within 2 depth
         if (subTrees.isEmpty()) return Move.getAvailableMoves(Pile.deepClonePiles(piles)).get(0); // Do losing move if lost
         int bestStrength = 0;
         Move bestMove = new Move(-1, -1); // Here so it's initialized
@@ -171,5 +171,6 @@ public class ParanoidMinimaxTree {
     @Override
     public int hashCode() {
         return Objects.hash(Arrays.hashCode(Pile.pilesAsSortedInt(piles)), activePlayer, computerID); // sort so that 1, 1, 2 and 2, 1, 1 are the same
+        // TODO further optimize the asSortedInt method to remove any empty piles
     }
 }

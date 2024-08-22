@@ -1,5 +1,5 @@
 public class Computer extends Player {
-    ParanoidMinimaxTree currentTree;
+    public ParanoidMinimaxTree currentTree;
 
     /*
     Controller to decide what kind of move to make. Makes it easier for other classes to call it
@@ -32,6 +32,6 @@ public class Computer extends Player {
     Initializes the current tree, lets it build out its children
      */
     public void buildTree(Pile[] piles){
-        currentTree = new ParanoidMinimaxTree(Pile.deepClonePiles(piles), null, playerID, playerID, 0);
+        currentTree = new ParanoidMinimaxTree(Pile.deepClonePiles(piles), null, playerID, playerID, 0, 0);
     }
 }

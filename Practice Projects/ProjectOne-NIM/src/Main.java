@@ -15,13 +15,20 @@ public class Main {
 
         /*
         Future TODOs:
-        Add pre-computed database
-            When a strength is computed, add it to the hashtable
-            When looking at creating more children, check if they've already been computed
-            If player data is stored with it, signs can be switched to be more effective
         Unittests
         Fix bug with play another game
+        // TODO needs to reset active player to 0 on game restart
         Add AI difficulty selector
+            Impossible
+                Computer moves first
+            Impossible evil
+                Computer moves first, prolongs your loss
+            Winnable
+                You go first, computer is still perfect
+            Winnable evil
+                You go first, but if you screw up it prolongs your loss
+            Random // TODO
+        Find way to allow AI to gang up on a player
          */
 
         System.out.println("Welcome to NeoNim!\n");
