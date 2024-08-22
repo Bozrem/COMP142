@@ -68,7 +68,19 @@ I also wanted to make sure that any pile that the user requested both existed an
    * Bad solution, inefficient and still fails
 3. Try-Catch statement with print statements to tell user what they did wrong
 
-I really wanted to find the mathematical way to win this game, so I simulated many scenarios
+I had a couple of quite difficult to find bugs when making the Minimax algorithm:
+1. Mutable piles
+   * While I was using the .clone() method on the piles, I found that it wasn't working for whatever reason
+   * Trying to get the next moves would mutate the original piles object
+   * To solve this, I made a deepClone method in Pile
+2. Backward strengths
+   * Due to doing the checks and strength assignments to empty piles instead of 1 stick remaining, I originally had the strength setting backward
+   * What made this bug particularly frustrating was that due to Minimax's choosing method, it hid this and made me think it worked
+   * I solved this by making a TreeViewer class that allowed me to go down the tree nodes and get important information about them
+3. Not Creating Children
+   * When I implemented the ComputedSolutions optimization, I did not account for the situation where the correct path is never populated.
+   * This resulted when a path was followed that had no children or some missing due to not needing to populate them, and would do the default take next available stick
+   * I found this bug with the same TreeViewer, and solved it by forcing it to populate the children of the current situation.
 
 ## Resources
 Stack Overflow - [For each char in String](https://stackoverflow.com/questions/2451650/how-do-i-apply-the-for-each-loop-to-every-character-in-a-string)\

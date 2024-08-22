@@ -2,6 +2,11 @@
 After writing the level 2 tree, I did more investigating into how I could improve it, as it once in a while made simple mistakes.\
 In my research with ChatGPT (in [Resources](#resources)), it proposed a paranoid version, as I've outlined below.
 
+## Minimax Fundamentals
+Minimax is an algorithm for turn based strategy games like Chess. 
+It seeks to branch out all paths from a scenario, and chooses the best one while assuming that the opponent plays optimally\
+If a scenario is shown to make the Computer lose in a turn, the Computer would avoid that scenario while the opponent would pick it.
+
 ## Strategy
 The foundation of the strategy relies on viewing all opponents as allied, and a weighting system of outcomes.\
 Both foundations have their own sections below.
@@ -9,6 +14,22 @@ Both foundations have their own sections below.
 2. When a leaf node is hit, mark it as +1 if an opponent lost, and -1 if the AI lost.
 3. As it traverses up the tree, it should be applying Minimax, while incrementing the values for each layer up it goes
 4. At the top, the AI wants to either choose the lowest positive number (soonest win) or largest negative number (furthest loss)
+
+## Optimizations
+Being that we need to look at every situation, the tree method originally expanded pretty poorly. 
+In a game with piles as simple as 3, 4, 5, it would need to compute some 700,000 situations.\
+To remedy this, I've implemented two major optimizations:
+1. Duplicate checking
+   * When creating children for a node, it originally made all possible children.
+   * Since Nim doesn't care about the order of piles, we can add a duplicate condition as follows
+     * If the sorted version of two piles is the same, they are equal.
+   * In this scenario, 1, 2, 3, and 3, 2, 1 are equal, because both are 1, 2, 3 when sorted.
+2. Save Computed Scenarios
+   * Once a scenario is made, we can use a hash to store that specific instance based on player and pile data
+   * When checking to create children in other trees, the current trees hash can be searched in the HashTable
+   * When a scenario is already in the hashtable, it is already computed and have its strength set accordingly
+     * I needed to solve a bug with this where it would follow a path that had no children because it already had its strength set
+     * I solved this by forcing situations to populate if they are the children of the root (current) situation
 
 ## Paranoid
 Paranoid means the AI is viewing all other opponents as allied against it. 

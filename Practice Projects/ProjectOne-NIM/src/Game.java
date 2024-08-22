@@ -4,17 +4,25 @@ import java.util.Scanner;
 // Could be able to keep Pile and Player info here, that way it could be changed from Main and still reset properly
 
 public class Game {
+
+    /*
+       Begins to play a new game
+       Parameters: piles, the piles to play the game with
+       Returns: void
+    */
     public static void playNewGame(Pile[] piles) {
         printGameInstructions();
-        while (!Pile.areEmpty(piles)){
+        while (!Pile.areEmpty(piles)) {
             Player.advanceTurn();
             Player.getActivePlayer().makeMove(piles);
         }
     }
 
     /*
-    Prints game instructions when the user wants them
-     */
+       Prints the game instructions if the user wants them
+       Parameters:
+       Returns: void
+    */
     private static void printGameInstructions() {
         int millisBetweenInstructions = 3000;
 
@@ -38,8 +46,10 @@ public class Game {
     }
 
     /*
-    Gets a Y/N answer from the user as a boolean
-     */
+       Gets a yes or no answer from the user
+       Parameters: prompt, the prompt to give the user for the yes or no
+       Returns: boolean, did the user say yes?
+    */
     public static boolean userYesOrNo(String prompt) {
         Scanner scan = new Scanner(System.in);
         System.out.print(prompt + " (Y/N): ");
