@@ -35,10 +35,10 @@ public class Main {
 
         System.out.println("Welcome to NeoNim!\n");
 
-        getPlayers();
-        Pile[] piles = Pile.fromIntArray(Pile.fromUserInput());
+        Player[] players = getPlayers();
+        Pile[] piles = Pile.fromIntArray(Pile.fromUserInput()); // TODO switch to direct
 
-        startGameLoop(piles);
+        startGameLoop(players, piles);
 
         System.out.println("\nThanks for playing!");
     }
@@ -48,28 +48,30 @@ public class Main {
         Parameters: piles, the piles to play with for the game being created
         Returns: void
      */
-    public static void startGameLoop(Pile[] piles) {
-        Game.playNewGame(Pile.deepClone(piles));
-        System.out.println("\nPlayer " + (Player.getActivePlayerNumber() + 1) + " Loses!\n\n");
-        askPlayAnother(piles);
-        // TODO switch to GameObject
-    }
+    public static void startGameLoop(Player[] players, Pile[] piles) {
+        GameObject game = new GameObject(players, piles);
+        int loser = game.playGame();
+        System.out.println("\nPlayer " + loser + " Loses!\n\n");
+        askPlayAnother(game);
+    } // TODO find a way that deletes the old instance of this running when a new one is made
 
     /*
         This function asks the user if they would like to play another game after the first one ends, and gets new game info if the user wants to change it. Can call startGameLoop
         Parameters: piles, the piles to play with for the game being created
         Returns: void
      */
-    public static void askPlayAnother(Pile[] piles) {
-        boolean playAnother = Game.userYesOrNo("Good Game! Would you like to play another?");
+    public static void askPlayAnother(GameObject oldGame) {
+        boolean playAnother = GameObject.getUserBoolean("Good Game! Would you like to play another?");
         if (!playAnother) return;
-        boolean changePiles = Game.userYesOrNo("Would you like to change the pile sizes?");
-        if (changePiles) {
-            piles = Pile.fromIntArray(Pile.fromUserInput());
+        Pile[] piles = oldGame.getInitialPiles();
+        Player[] players = oldGame.getPlayers();
+        if (GameObject.getUserBoolean("Would you like to change the pile sizes?")) {
+            piles = Pile.fromIntArray(Pile.fromUserInput()); // TODO switch to direct
         }
-        boolean changePlayers = Game.userYesOrNo("Would you like to change the amount of players?");
-        if (changePlayers) getPlayers();
-        startGameLoop(piles);
+        if (GameObject.getUserBoolean("Would you like to change the amount of players?")) {
+            players = getPlayers();
+        }
+        startGameLoop(players, piles);
     }
 
     /*
@@ -77,7 +79,7 @@ public class Main {
         Parameters:
         Returns:
      */
-    public static void getPlayers() {
+    public static Player[] getPlayers() {
         Scanner scan = new Scanner(System.in);
         System.out.println("NeoNim allows for a wide variety of player and pile options!");
         System.out.println("You can play both with other people and against computers.");
@@ -91,6 +93,6 @@ public class Main {
             computers = scan.nextInt();
         }
         System.out.println(); // To space out before pile sizes
-        Player.initializePlayers(humans, computers);
+        return Player.initializePlayers(humans, computers);
     }
 }

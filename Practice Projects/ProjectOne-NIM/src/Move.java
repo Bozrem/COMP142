@@ -92,10 +92,12 @@ public class Move {
     */
     @Override
     public String toString() {
-        String string = "Take ";
-        string += sticks;
-        string += " from Pile ";
-        string += pile;
-        return string;
+        return player.getPlayerType() +
+                " " +
+                player.playerID +
+                " Takes " +
+                sticks +
+                " Sticks from Pile " +
+                pile;
     }
 }

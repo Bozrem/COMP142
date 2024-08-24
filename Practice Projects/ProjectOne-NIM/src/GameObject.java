@@ -1,15 +1,13 @@
 import java.util.Scanner;
 
 public class GameObject {
-    private final Player[] initialPlayers;
-    public Player[] players;
+    private final Player[] players;
     private final Pile[] initialPiles;
-    private Pile[] piles;
+    private final Pile[] piles;
     private Player activePlayer;
 
     GameObject(Player[] players, Pile[] piles){
         this.players = Player.deepClone(players); // Create immutable
-        this.initialPlayers = Player.deepClone(players); // Create immutable
         this.piles = Pile.deepClone(piles); // Create clone of other piles to not change the old ones
         this.initialPiles = Pile.deepClone(piles); // Create clone of other piles to not change the old ones
         this.activePlayer = players[0];
@@ -18,32 +16,33 @@ public class GameObject {
     public int playGame(){
         if (getUserBoolean("Do you want game instructions?")) printGameInstructions();
 
+        Move playerMove = null;
         while(!Pile.areEmpty(piles)){
             activePlayer.printGame(piles, activePlayer);
-            Move playerMove = activePlayer.getMove(piles); // Mutable object
-            incrementActivePlayer();
+
+            playerMove = activePlayer.getMove(this); // Mutable object
+            activePlayer = Player.getNextPlayer(activePlayer, players); // Increment player
+
             if (playerMove.makeMove(piles)){
-                // Print players move
+                System.out.println(playerMove);
                 continue;
             }
-            // Error message
+            System.out.println("Error when attempting to make player move");
         }
-        // Make move object also store a player object for who made the move
-        return 0; // TODO remove temp
+        return playerMove.player.playerID; // TODO add null safety
     }
 
-    public Player[] getInitialPlayers(){
-        return Player.deepClone(initialPlayers);
+    public Player[] getPlayers(){
+        return Player.deepClone(players);
     }
 
     public Pile[] getInitialPiles(){
         return Pile.deepClone(initialPiles);
     }
 
-    private void incrementActivePlayer(){
-        activePlayer = Player.getNextPlayer(activePlayer, players);
+    public Pile[] getPiles(){
+        return Pile.deepClone(piles);
     }
-
 
     /*
        Prints the game instructions if the user wants them
