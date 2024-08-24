@@ -4,15 +4,17 @@ import java.util.List;
 public class Move {
     private final int pile;
     private final int sticks;
+    public final Player player;
 
     /*
        Initializes a new move
        Parameters: pile, the pile to take from,
             sticks, the amount of sticks to take
     */
-    Move(int pile, int sticks) {
+    Move(int pile, int sticks, Player player) {
         this.pile = pile;
         this.sticks = sticks;
+        this.player = player;
     }
 
     /*
@@ -32,9 +34,9 @@ public class Move {
        Returns: Pile[], the piles after the move
     */
     public Pile[] getPilesAfterMove(Pile[] piles) {
-        Pile[] clonedPiles = Pile.deepClonePiles(piles);
-        clonedPiles[pile].takeSticks(sticks);
-        return clonedPiles;
+        piles = Pile.deepClone(piles);
+        piles[pile].takeSticks(sticks);
+        return piles;
     }
 
     /*
@@ -42,11 +44,12 @@ public class Move {
        Parameters: piles, the array to get moves from
        Returns: List<Move>, the list of available moves from the given piles
     */
-    public static List<Move> getAvailableMoves(Pile[] piles) {
+    public static List<Move> getAvailableMoves(Pile[] piles, Player playerToMove) {
+        piles = Pile.deepClone(piles);
         List<Move> availableMoves = new ArrayList<>();
         for (int pile = 0; pile < piles.length; pile++) {
             for (int sticks = 1; sticks <= piles[pile].getCount(); sticks++) {
-                availableMoves.add(new Move(pile, sticks));
+                availableMoves.add(new Move(pile, sticks, playerToMove));
             }
         }
         return availableMoves;
@@ -63,6 +66,7 @@ public class Move {
         if (pile >= piles.length) return false; // Pile doesn't exist
         if (piles[pile].getCount() < sticks) return false; // Stick request is more than is in pile
         return true;
+        // Only does checks, doesn't need to clone the piles
     }
 
     /*

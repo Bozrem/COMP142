@@ -44,20 +44,21 @@ public class Main {
     }
 
     /*
-    This function controls the game loop, beginning a game and calling a function that can call this again
-    Parameters: piles, the piles to play with for the game being created
-    Returns: void
+        This function controls the game loop, beginning a game and calling a function that can call this again
+        Parameters: piles, the piles to play with for the game being created
+        Returns: void
      */
     public static void startGameLoop(Pile[] piles) {
-        Game.playNewGame(Pile.deepClonePiles(piles));
+        Game.playNewGame(Pile.deepClone(piles));
         System.out.println("\nPlayer " + (Player.getActivePlayerNumber() + 1) + " Loses!\n\n");
         askPlayAnother(piles);
+        // TODO switch to GameObject
     }
 
     /*
-    This function asks the user if they would like to play another game after the first one ends, and gets new game info if the user wants to change it. Can call startGameLoop
-    Parameters: piles, the piles to play with for the game being created
-    Returns: void
+        This function asks the user if they would like to play another game after the first one ends, and gets new game info if the user wants to change it. Can call startGameLoop
+        Parameters: piles, the piles to play with for the game being created
+        Returns: void
      */
     public static void askPlayAnother(Pile[] piles) {
         boolean playAnother = Game.userYesOrNo("Good Game! Would you like to play another?");
@@ -72,9 +73,9 @@ public class Main {
     }
 
     /*
-    Gets the players playing the game from the user, sets them in the Player class
-    Parameters:
-    Returns:
+        Gets the players playing the game from the user, sets them in the Player class
+        Parameters:
+        Returns:
      */
     public static void getPlayers() {
         Scanner scan = new Scanner(System.in);

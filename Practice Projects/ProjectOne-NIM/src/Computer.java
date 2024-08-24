@@ -1,6 +1,10 @@
 public class Computer extends Player {
     public ParanoidMinimaxTree currentTree;
 
+    Computer(int computerID){
+        super(computerID);
+    }
+
     /*
        Overrides Player.makeMove to get the computer move and do it
        Parameters: piles, the piles for the computer to make a move from
@@ -8,7 +12,7 @@ public class Computer extends Player {
     */
     @Override
     public void makeMove(Pile[] piles) {
-        printGame(piles);
+        printGame(piles, this);
         buildTree(piles);
         //TreeViewer viewer = new TreeViewer(currentTree);
         //viewer.browseTree();
@@ -23,7 +27,8 @@ public class Computer extends Player {
        Parameters: piles, the piles for the computer to make a move from
        Returns: void
     */
-    private void printGame(Pile[] piles) {
+    @Override
+    public void printGame(Pile[] piles, Player activePlayer) {
         System.out.println("\n\n\n"); // To space it nicely
         // TODO make computer have its own number so you can have Player 1 and Computer 1
         System.out.println("It is Computer " + (getActivePlayerNumber() + 1) + "'s turn"); // Have to use function because activePlayer is private
@@ -38,6 +43,6 @@ public class Computer extends Player {
        Returns: void
     */
     public void buildTree(Pile[] piles) {
-        currentTree = new ParanoidMinimaxTree(Pile.deepClonePiles(piles), null, playerID, playerID, 0, 0);
+        currentTree = new ParanoidMinimaxTree(Pile.deepClone(piles), null, playerID, playerID, 0, 0, this);
     }
 }

@@ -85,7 +85,7 @@ public class Pile {
         String input = scan.nextLine();
         // Split on any non-digit, then convert to int
         return Arrays.stream(input.split("\\D+")).mapToInt(Integer::parseInt).toArray();
-    }
+    } // TODO refactor with returning Pile[]
 
     /*
        Creates a string to represent an array of piles, in the form 3, 4, 5,
@@ -93,11 +93,12 @@ public class Pile {
        Returns: String, the string version of the piles
     */
     public static String pilesToString(Pile[] piles) {
-        String pileString = "";
+        StringBuilder pileString = new StringBuilder();
         for (Pile pile : piles) {
-            pileString += (pile.getCount() + ", ");
+            pileString.append(pile.getCount())
+                    .append(", ");
         }
-        return pileString;
+        return pileString.toString();
     }
 
     /*
@@ -105,7 +106,7 @@ public class Pile {
        Parameters: originalPiles, a pile array to clone
        Returns: Pile[] cloned pile array
     */
-    public static Pile[] deepClonePiles(Pile[] originalPiles) {
+    public static Pile[] deepClone(Pile[] originalPiles) {
         Pile[] clone = new Pile[originalPiles.length];
         for (int i = 0; i < originalPiles.length; i++) {
             clone[i] = new Pile(originalPiles[i].getCount()); // Assuming Pile has a constructor that takes the count
@@ -144,4 +145,10 @@ public class Pile {
         Arrays.sort(asInt);
         return asInt;
     }
+
+    // TODO methods to add
+    /*
+    boolean pilesHaveSticks
+
+     */
 }
