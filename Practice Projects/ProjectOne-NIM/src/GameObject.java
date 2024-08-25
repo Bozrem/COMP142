@@ -6,6 +6,11 @@ public class GameObject {
     private final Pile[] piles;
     private Player activePlayer;
 
+    /*
+        This function constructs a new GameObject by cloning each important aspect of the game
+        Parameters: players, the array of Player objects in the game,
+                piles, the array of Pile objects for the games piles
+     */
     GameObject(Player[] players, Pile[] piles){
         this.players = Player.deepClone(players); // Create immutable
         this.piles = Pile.deepClone(piles); // Create clone of other piles to not change the old ones
@@ -13,11 +18,16 @@ public class GameObject {
         this.activePlayer = players[0];
     }
 
-    public int playGame(){
+    /*
+        Begins a game based on the information when initializing the object
+        Parameters:
+        Returns: Player, the losing player of the game
+     */
+    public Player playGame(){
         if (getUserBoolean("Do you want game instructions?")) printGameInstructions();
 
         Move playerMove = null;
-        while(!Pile.areEmpty(piles)){
+        while(Pile.pilesHaveSticks(piles)){
             activePlayer.printGame(piles, activePlayer);
 
             playerMove = activePlayer.getMove(this); // Mutable object
@@ -29,19 +39,35 @@ public class GameObject {
             }
             System.out.println("Error when attempting to make player move");
         }
-        return playerMove.player.playerID; // TODO add null safety
+        assert playerMove != null;
+        return playerMove.player;
     }
 
+    /*
+        Getter method for a copy of the Players array
+        Parameters:
+        Returns: Player[], array of Player objects for the game
+     */
     public Player[] getPlayers(){
         return Player.deepClone(players);
     }
 
-    public Pile[] getInitialPiles(){
-        return Pile.deepClone(initialPiles);
-    }
-
+    /*
+        Getter method for a copy of the Piles array
+        Parameters:
+        Returns: Pile[], array of piles currently in the GameObject
+    */
     public Pile[] getPiles(){
         return Pile.deepClone(piles);
+    }
+
+    /*
+        Getter method for a copy of the InitialPiles array, to restart the game with the same piles when requested
+        Parameters:
+        Returns: Pile[], array of piles originally in the GameObject
+     */
+    public Pile[] getInitialPiles(){
+        return Pile.deepClone(initialPiles);
     }
 
     /*

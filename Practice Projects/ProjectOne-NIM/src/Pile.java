@@ -48,18 +48,6 @@ public class Pile {
     }
 
     /*
-       Checks if an array of Pile objects are all empty
-       Parameters: piles, the piles to check if empty
-       Returns: boolean, are piles empty
-    */
-    public static boolean areEmpty(Pile[] piles) {
-        for (Pile pile : piles) {
-            if (pile.getCount() != 0) return false;
-        }
-        return true;
-    }
-
-    /*
        Prints an array of piles for the user
        Parameters: piles, the piles to print
        Returns: void
@@ -79,12 +67,12 @@ public class Pile {
        Parameters:
        Returns: int[] array of pile sizes
     */
-    public static int[] fromUserInput() {
+    public static Pile[] fromUserInput() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Please enter the pile sizes you would like to play with, separated by commas:");
         String input = scan.nextLine();
         // Split on any non-digit, then convert to int
-        return Arrays.stream(input.split("\\D+")).mapToInt(Integer::parseInt).toArray();
+        return fromIntArray(Arrays.stream(input.split("\\D+")).mapToInt(Integer::parseInt).toArray());
     } // TODO refactor with returning Pile[]
 
     /*
@@ -146,9 +134,15 @@ public class Pile {
         return asInt;
     }
 
-    // TODO methods to add
     /*
-    boolean pilesHaveSticks
-
-     */
+       Checks if an array of Pile objects has any sticks
+       Parameters: piles, the piles to check if empty
+       Returns: boolean, do the piles have sticks
+    */
+    public static boolean pilesHaveSticks(Pile[] piles) {
+        for (Pile pile : piles) {
+            if (pile.getCount() != 0) return true;
+        }
+        return false;
+    }
 }

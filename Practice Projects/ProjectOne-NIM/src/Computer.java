@@ -20,8 +20,6 @@ public class Computer extends Player {
         return move;
     }
 
-
-
     /*
        Populates the player objects with computers moving first
        Parameters: piles, the piles for the computer to make a move from

@@ -7,6 +7,10 @@ public class Player {
 
     // TODO cool score assessment thing using how good its moves were on the tree
 
+    /*
+    Initializer method for Player
+    Parameters: playerID, the ID for the new player
+     */
     Player(int playerID){
         this.playerID = playerID;
     }

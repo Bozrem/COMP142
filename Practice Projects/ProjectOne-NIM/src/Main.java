@@ -17,8 +17,6 @@ public class Main {
         /*
         Future TODO:
         Unittests
-        Fix bug with play another game
-        // TODO needs to reset active player to 0 on game restart
         Add AI difficulty selector
             Impossible
                 Computer moves first
@@ -30,14 +28,13 @@ public class Main {
                 You go first, but if you screw up it prolongs your loss
             Random
                 Computer plays random moves
-        Find way to allow AI to gang up on a player
+        Research Computer mutual interest
          */
 
         System.out.println("Welcome to NeoNim!\n");
 
         Player[] players = getPlayers();
-        Pile[] piles = Pile.fromIntArray(Pile.fromUserInput()); // TODO switch to direct
-
+        Pile[] piles = Pile.fromUserInput();
         startGameLoop(players, piles);
 
         System.out.println("\nThanks for playing!");
@@ -50,8 +47,8 @@ public class Main {
      */
     public static void startGameLoop(Player[] players, Pile[] piles) {
         GameObject game = new GameObject(players, piles);
-        int loser = game.playGame();
-        System.out.println("\nPlayer " + loser + " Loses!\n\n");
+        Player loser = game.playGame();
+        System.out.println("\n" + loser.getPlayerType() + " " + loser.playerID + " Loses!\n\n");
         askPlayAnother(game);
     } // TODO find a way that deletes the old instance of this running when a new one is made
 
@@ -66,7 +63,7 @@ public class Main {
         Pile[] piles = oldGame.getInitialPiles();
         Player[] players = oldGame.getPlayers();
         if (GameObject.getUserBoolean("Would you like to change the pile sizes?")) {
-            piles = Pile.fromIntArray(Pile.fromUserInput()); // TODO switch to direct
+            piles = Pile.fromUserInput();
         }
         if (GameObject.getUserBoolean("Would you like to change the amount of players?")) {
             players = getPlayers();
