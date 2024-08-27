@@ -23,7 +23,7 @@ public class TreeViewer {
         while (userBrowsing) {
             System.out.println("\n\n\nCurrent Tree Stats");
             Pile.printPiles(tree.getPiles());
-            System.out.println("Is computer active player: " + (tree.activePlayer == tree.computerID));
+            System.out.println("Is computer active player: " + (tree.activePlayer.playerID == tree.computer.playerID));
             System.out.println("Strength: " + tree.getStrength());
             System.out.println("Recommended move: " + tree.getMove());
 

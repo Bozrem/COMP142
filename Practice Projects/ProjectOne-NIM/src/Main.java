@@ -17,8 +17,6 @@ public class Main {
         /*
         Future TODO:
         Unittests
-        Fix bug with play another game
-        // TODO needs to reset active player to 0 on game restart
         Add AI difficulty selector
             Impossible
                 Computer moves first
@@ -30,53 +28,55 @@ public class Main {
                 You go first, but if you screw up it prolongs your loss
             Random
                 Computer plays random moves
-        Find way to allow AI to gang up on a player
+        Research Computer mutual interest
          */
 
         System.out.println("Welcome to NeoNim!\n");
 
-        getPlayers();
-        Pile[] piles = Pile.fromIntArray(Pile.fromUserInput());
-
-        startGameLoop(piles);
+        Player[] players = getPlayers();
+        Pile[] piles = Pile.fromUserInput();
+        startGameLoop(players, piles);
 
         System.out.println("\nThanks for playing!");
     }
 
     /*
-    This function controls the game loop, beginning a game and calling a function that can call this again
-    Parameters: piles, the piles to play with for the game being created
-    Returns: void
+        This function controls the game loop, beginning a game and calling a function that can call this again
+        Parameters: piles, the piles to play with for the game being created
+        Returns: void
      */
-    public static void startGameLoop(Pile[] piles) {
-        Game.playNewGame(Pile.deepClonePiles(piles));
-        System.out.println("\nPlayer " + (Player.getActivePlayerNumber() + 1) + " Loses!\n\n");
-        askPlayAnother(piles);
-    }
+    public static void startGameLoop(Player[] players, Pile[] piles) {
+        GameObject game = new GameObject(players, piles);
+        Player loser = game.playGame();
+        System.out.println("\n" + loser.getPlayerType() + " " + loser.playerID + " Loses!\n\n");
+        askPlayAnother(game);
+    } // TODO find a way that deletes the old instance of this running when a new one is made
 
     /*
-    This function asks the user if they would like to play another game after the first one ends, and gets new game info if the user wants to change it. Can call startGameLoop
-    Parameters: piles, the piles to play with for the game being created
-    Returns: void
+        This function asks the user if they would like to play another game after the first one ends, and gets new game info if the user wants to change it. Can call startGameLoop
+        Parameters: piles, the piles to play with for the game being created
+        Returns: void
      */
-    public static void askPlayAnother(Pile[] piles) {
-        boolean playAnother = Game.userYesOrNo("Good Game! Would you like to play another?");
+    public static void askPlayAnother(GameObject oldGame) {
+        boolean playAnother = GameObject.getUserBoolean("Good Game! Would you like to play another?");
         if (!playAnother) return;
-        boolean changePiles = Game.userYesOrNo("Would you like to change the pile sizes?");
-        if (changePiles) {
-            piles = Pile.fromIntArray(Pile.fromUserInput());
+        Pile[] piles = oldGame.getInitialPiles();
+        Player[] players = oldGame.getPlayers();
+        if (GameObject.getUserBoolean("Would you like to change the pile sizes?")) {
+            piles = Pile.fromUserInput();
         }
-        boolean changePlayers = Game.userYesOrNo("Would you like to change the amount of players?");
-        if (changePlayers) getPlayers();
-        startGameLoop(piles);
+        if (GameObject.getUserBoolean("Would you like to change the amount of players?")) {
+            players = getPlayers();
+        }
+        startGameLoop(players, piles);
     }
 
     /*
-    Gets the players playing the game from the user, sets them in the Player class
-    Parameters:
-    Returns:
+        Gets the players playing the game from the user, sets them in the Player class
+        Parameters:
+        Returns:
      */
-    public static void getPlayers() {
+    public static Player[] getPlayers() {
         Scanner scan = new Scanner(System.in);
         System.out.println("NeoNim allows for a wide variety of player and pile options!");
         System.out.println("You can play both with other people and against computers.");
@@ -90,6 +90,6 @@ public class Main {
             computers = scan.nextInt();
         }
         System.out.println(); // To space out before pile sizes
-        Player.initializePlayers(humans, computers);
+        return Player.initializePlayers(humans, computers);
     }
 }

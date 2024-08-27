@@ -64,3 +64,22 @@ The AI has no winning situation here, so it would choose the one where it surviv
 ## Resources
 ChatGPT - [Improving Nim AI Strategy](https://chatgpt.com/share/519f1a42-325d-44d5-a241-4539b3e14f5d)\
 YouTube - Sebastian Lague - [Algorithms Explained – minimax and alpha-beta pruning](https://youtu.be/l-hh51ncgDI?si=xrGWiMcuzKrK9qz3)
+
+## Limitations
+While a paranoid method to allow Minimax can be quite powerful, it does have its limitations.
+I've outlined below what I see as the biggest ones here, and some possible solutions to consider
+### Mutual Interests
+Being that the algorithm plays considering all other players as enemies, it cannot see situations in which alliance may be beneficial.
+Take the following NeoNim game as an example:
+* The piles are 3, 4, 0
+  * It is the Algorithms turn, with two other players to follow.
+  * In its current paranoid state, the computer thinks it loses in 7 moves, and takes a stick from Pile 1 to delay its loss.
+* The piles are 2, 4, 0
+  * It is the first players turn
+  * A human sees the advantage of mutual interest
+    * If the first player takes the 4, it leaves two sticks, guaranteeing that loss for a different player is within 2 moves
+    * 
+### Multiplayer Bugs
+Similar to Mutual interests, it doesn't see that it can force a hand with multiple opponents.\
+When given 2, 4 and two other players to follow, instead of picking the 4 and guaranteeing safety, 
+it thinks it is losing in 7 moves and takes a stick from the first pile, instead giving opponents a way to team up and win

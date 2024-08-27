@@ -4,8 +4,9 @@ public class ParanoidMinimaxTree {
     private Pile[] piles;
     Move moveFromParent;
     List<ParanoidMinimaxTree> subTrees = new ArrayList<>();
-    public final int activePlayer;
-    public final int computerID;
+    public final Player activePlayer;
+    public final Computer computer;
+    private final Player[] players;
     public static int totalNodes = 0;
     public final int treeID;
     public int strength;
@@ -13,6 +14,8 @@ public class ParanoidMinimaxTree {
     public static Hashtable<Integer, ParanoidMinimaxTree> index = new Hashtable<>(); // Used for viewing tree
     private static Hashtable<Integer, Integer> computedStrengths = new Hashtable<>(); // Used for not having to do same compute multiple times
 
+
+    // TODO make a builder method
     /*
        Initializes a new tree, saving all data about it and populating its children
        Parameters: piles, the array of piles for this specific node/situation
@@ -22,14 +25,15 @@ public class ParanoidMinimaxTree {
             parentID, the integer from index of the parent, so that it can be tracked in TreeViewer
             depthFromCurrent, the int depth from the current situation so that it creates the children of the root
     */
-    ParanoidMinimaxTree(Pile[] piles, Move moveFromParent, int activePlayer, int computerID, int parentID, int depthFromCurrent) {
-        this.piles = Pile.deepClonePiles(piles);
+    ParanoidMinimaxTree(Pile[] piles, Move moveFromParent, Player activePlayer, int parentID, int depthFromCurrent, Computer computer, Player[] playerList) {
+        this.piles = piles;
         this.moveFromParent = moveFromParent;
         this.activePlayer = activePlayer;
-        this.computerID = computerID;
         treeID = totalNodes + 1;
         totalNodes++;
         this.depthFromCurrent = depthFromCurrent;
+        this.computer = computer;
+        this.players = playerList;
         index.put(treeID, this);
 
         if (Main.debugMode) {
@@ -54,9 +58,9 @@ public class ParanoidMinimaxTree {
             return;
         }
 
-        List<Move> availableMoves = Move.getAvailableMoves(Pile.deepClonePiles(piles));
+        List<Move> availableMoves = Move.getAvailableMoves(piles, computer);
         for (Move move : availableMoves) {
-            Pile[] pilesAfterMove = move.getPilesAfterMove(Pile.deepClonePiles(piles)); // Check what piles are after
+            Pile[] pilesAfterMove = move.getPilesAfterMove(piles); // Check what piles are after
 
             boolean arePilesDuplicates = false;
             for (ParanoidMinimaxTree child : subTrees) {
@@ -68,8 +72,8 @@ public class ParanoidMinimaxTree {
 
             if (!arePilesDuplicates) {
                 // Only create a child if some variation of the piles does not already exist
-                subTrees.add(new ParanoidMinimaxTree(pilesAfterMove, move, getNextPlayer(), computerID, treeID, depthFromCurrent + 1));
-            }
+                subTrees.add(new ParanoidMinimaxTree(pilesAfterMove, move, Player.getNextPlayer(activePlayer, players), treeID, depthFromCurrent + Player.getHumansInPlayers(players), computer, players));
+            } // Depth will need to change if a different initialization order is done
         }
         getStrength();
     }
@@ -82,9 +86,9 @@ public class ParanoidMinimaxTree {
     public Move getMove() {
         populateChildren(); // Repopulate so that it populates the children within 2 depth
         if (subTrees.isEmpty())
-            return Move.getAvailableMoves(Pile.deepClonePiles(piles)).get(0); // Do losing move if lost
+            return Move.getAvailableMoves(piles, computer).get(0); // Do losing move if lost
         int bestStrength = 0;
-        Move bestMove = new Move(-1, -1); // Here so it's initialized
+        Move bestMove = new Move(-1, -1, new Player(-1)); // Here so it's initialized
         for (ParanoidMinimaxTree child : subTrees) {
             int childStrength = child.getStrength();
             if (isBetterStrength(bestStrength, childStrength)) {
@@ -92,8 +96,6 @@ public class ParanoidMinimaxTree {
                 bestMove = child.moveFromParent;
             }
         }
-        System.out.println("Computer moves towards best strength of " + bestStrength);
-        System.out.println("Added " + computedStrengths.size() + " solutions to computed strengths");
         return bestMove;
     }
 
@@ -104,8 +106,8 @@ public class ParanoidMinimaxTree {
     */
     public int getStrength() {
         if (strength != 0) return strength;
-        if (subTrees.isEmpty()) {
-            // Having no children means that this move doesn't have any other valid moves after, and is losing
+        if (Pile.pilesTotal(piles) == 1) {
+            // Only 1 stick left means it loses
             return strengthModifier(); // -1 if computer lost, 1 if other lost
         }
         int bestStrength = 0;
@@ -144,10 +146,10 @@ public class ParanoidMinimaxTree {
         if (Main.debugMode) {
             System.out.println("\nCurrent strength: " + currentBestStrength);
             System.out.println("New strength: " + newStrength);
-            System.out.println("Active player is " + activePlayer + " and computer player id is " + computerID);
+            System.out.println("Active player is " + activePlayer.playerID + " and computer player id is " + computer.playerID);
         }
-        if (currentBestStrength == 0) return true;
-        if (activePlayer == computerID) {
+        if (currentBestStrength == 0) return true; // First child
+        if (activePlayer.playerID == computer.playerID) {
             if (newStrength > 0 && currentBestStrength < 0) return true; // New kills the opponent, old lost to it
             if (newStrength > 0 && currentBestStrength > 0 && newStrength < currentBestStrength)
                 return true; // Both kill opponent (positive), new kills quicker (smaller number)
@@ -175,20 +177,10 @@ public class ParanoidMinimaxTree {
        Returns: int, the strength for the leaf node
     */
     private int strengthModifier() {
-        if (activePlayer == computerID) return 1; // Empty piles given to computer, opponent before them lost
-        return -1; // Computer lost on the round before
-    }
-
-    /*
-       Cycles to the next player when creating children nodes
-       Parameters:
-       Returns: int, the ID of the next player
-    */
-    private int getNextPlayer() {
-        if (activePlayer < Player.players.length - 1) {
-            return (activePlayer + 1);
+        if (activePlayer.playerID == computer.playerID){
+            return -1; // Empty piles given to computer, opponent before them lost
         }
-        return 0;
+        return 1; // Computer lost on the round before
     }
 
     /*
@@ -209,14 +201,8 @@ public class ParanoidMinimaxTree {
     public boolean equals(Object obj) {
         if (obj.getClass() != ParanoidMinimaxTree.class) return false; // Object is type tree
         ParanoidMinimaxTree otherTree = (ParanoidMinimaxTree) obj;
-        if (!Pile.equalPiles(this.piles, otherTree.piles)) return false; // Unequal piles
-        if (this.activePlayer != otherTree.activePlayer) return false; // Different persons turn
-        if (this.computerID != otherTree.computerID)
-            return false; // Computer is a different player (for multi computer games)
-        return true;
+        return (hashCode() == otherTree.hashCode());
     }
-
-    // TODO implement hashcode way of doing equals method above
 
     /*
        Hashes the current tree based on the piles, active player, and computer player ID
@@ -225,7 +211,7 @@ public class ParanoidMinimaxTree {
     */
     @Override
     public int hashCode() {
-        return Objects.hash(Arrays.hashCode(Pile.pilesAsSortedInt(piles)), activePlayer, computerID); // sort so that 1, 1, 2 and 2, 1, 1 are the same
+        return Objects.hash(Arrays.hashCode(Pile.pilesAsSortedInt(piles)), activePlayer, computer.playerID); // sort so that 1, 1, 2 and 2, 1, 1 are the same
         // TODO further optimize the asSortedInt method to remove any empty piles
     }
 }

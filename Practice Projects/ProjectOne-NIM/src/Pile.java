@@ -48,18 +48,6 @@ public class Pile {
     }
 
     /*
-       Checks if an array of Pile objects are all empty
-       Parameters: piles, the piles to check if empty
-       Returns: boolean, are piles empty
-    */
-    public static boolean areEmpty(Pile[] piles) {
-        for (Pile pile : piles) {
-            if (pile.getCount() != 0) return false;
-        }
-        return true;
-    }
-
-    /*
        Prints an array of piles for the user
        Parameters: piles, the piles to print
        Returns: void
@@ -79,13 +67,13 @@ public class Pile {
        Parameters:
        Returns: int[] array of pile sizes
     */
-    public static int[] fromUserInput() {
+    public static Pile[] fromUserInput() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Please enter the pile sizes you would like to play with, separated by commas:");
         String input = scan.nextLine();
         // Split on any non-digit, then convert to int
-        return Arrays.stream(input.split("\\D+")).mapToInt(Integer::parseInt).toArray();
-    }
+        return fromIntArray(Arrays.stream(input.split("\\D+")).mapToInt(Integer::parseInt).toArray());
+    } // TODO refactor with returning Pile[]
 
     /*
        Creates a string to represent an array of piles, in the form 3, 4, 5,
@@ -93,11 +81,12 @@ public class Pile {
        Returns: String, the string version of the piles
     */
     public static String pilesToString(Pile[] piles) {
-        String pileString = "";
+        StringBuilder pileString = new StringBuilder();
         for (Pile pile : piles) {
-            pileString += (pile.getCount() + ", ");
+            pileString.append(pile.getCount())
+                    .append(", ");
         }
-        return pileString;
+        return pileString.toString();
     }
 
     /*
@@ -105,7 +94,7 @@ public class Pile {
        Parameters: originalPiles, a pile array to clone
        Returns: Pile[] cloned pile array
     */
-    public static Pile[] deepClonePiles(Pile[] originalPiles) {
+    public static Pile[] deepClone(Pile[] originalPiles) {
         Pile[] clone = new Pile[originalPiles.length];
         for (int i = 0; i < originalPiles.length; i++) {
             clone[i] = new Pile(originalPiles[i].getCount()); // Assuming Pile has a constructor that takes the count
@@ -143,5 +132,23 @@ public class Pile {
         }
         Arrays.sort(asInt);
         return asInt;
+    }
+
+    /*
+       Checks if an array of Pile objects has any sticks
+       Parameters: piles, the piles to check if empty
+       Returns: boolean, do the piles have sticks
+    */
+    public static boolean pilesHaveSticks(Pile[] piles) {
+        for (Pile pile : piles) {
+            if (pile.getCount() != 0) return true;
+        }
+        return false;
+    }
+
+    public static int pilesTotal(Pile[] piles){
+        int count = 0;
+        for (Pile pile : piles) count += pile.getCount();
+        return count;
     }
 }

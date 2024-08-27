@@ -4,19 +4,15 @@ import java.util.Scanner;
 
 public class Player {
     public int playerID;
-    public static Player[] players;
-    private static int activePlayer = -1; // advances to player 0 on first turn
+
+    // TODO cool score assessment thing using how good its moves were on the tree
 
     /*
-       Print out piles, get the move from the player, and make it if its valid
-       Parameters: piles, the current piles that the user is making a move off of
-       Returns: void
-    */
-    public void makeMove(Pile[] piles) {
-        printGame(piles);
-
-        Move move = getUserMove(piles);
-        if (!move.makeMove(piles)) System.out.println("Move failed to execute. Was not viable");
+    Initializer method for Player
+    Parameters: playerID, the ID for the new player
+     */
+    Player(int playerID){
+        this.playerID = playerID;
     }
 
     /*
@@ -24,16 +20,16 @@ public class Player {
        Parameters: piles, to check if the user move is viable
        Returns: Move, the move the user wants to make
     */
-    private Move getUserMove(Pile[] piles) {
+    public Move getMove(GameObject game) {
         Scanner scan = new Scanner(System.in);
-        Move move = new Move(-1, -1);
+        Move move = new Move(-1, -1, this);
 
-        while (!move.isMoveViable(piles)) {
+        while (!move.isMoveViable(game.getPiles())) {
             System.out.print("Pile to take from: ");
             int pile = scan.nextInt();
             System.out.print("Amount of sticks you want to take: ");
             int sticks = scan.nextInt();
-            move = new Move(pile, sticks);
+            move = new Move(pile, sticks, this);
         }
 
         return move;
@@ -44,29 +40,11 @@ public class Player {
        Parameters: piles, the piles to display to the user
        Returns: void
     */
-    private void printGame(Pile[] piles) {
+    public void printGame(Pile[] piles, Player activePlayer) {
         System.out.println("\n\n\n"); // To space it nicely
-        System.out.println("It is Player " + (activePlayer + 1) + "'s turn");
+        System.out.println("It is Player " + (activePlayer.playerID) + "'s turn");
         System.out.println("Current Board:");
         Pile.printPiles(piles);
-    }
-
-    /*
-       Get player whose turn it is
-       Parameters:
-       Returns: Player, the player whose turn it is
-    */
-    public static Player getActivePlayer() {
-        return players[activePlayer];
-    }
-
-    /*
-       Get player whose turn it is as a number
-       Parameters: self
-       Returns: int, the player whose turn it is, as a number
-    */
-    public static int getActivePlayerNumber() {
-        return activePlayer;
     }
 
     /*
@@ -74,45 +52,70 @@ public class Player {
        Parameters: amount of human and computer players
        Returns: void
     */
-    public static void initializePlayers(int humans, int computers) {
-        players = new Player[humans + computers];
+    public static Player[] initializePlayers(int humans, int computers) {
+        Player[] players = new Player[humans + computers];
         // TODO make these switch back and forth
         for (int i = 0; i < humans; i++) {
-            players[i] = new Player();
+            players[i] = new Player(i);
             players[i].playerID = i;
         }
         for (int i = humans; i < humans + computers; i++) {
-            players[i] = new Computer();
+            players[i] = new Computer(i);
             players[i].playerID = i;
         }
+        return players;
+    } // TODO implement impossible mode
+
+    public static Player getNextPlayer(Player activePlayer, Player[] players){
+        if (activePlayer.playerID == players.length - 1){
+            return players[0];
+        }
+        return players[activePlayer.playerID + 1];
     }
 
     /*
-       Populates the player objects with computers moving first
-       Parameters: amount of human and computer players
-       Returns: void
-    */
-    public static void initializePlayersReverse(int humans, int computers) {
-        players = new Player[humans + computers];
-        // TODO make these switch back and forth
-        for (int i = 0; i < computers; i++) {
-            players[i] = new Computer();
-            players[i].playerID = i;
-        }
-        for (int i = humans; i < humans + computers; i++) {
-            players[i] = new Player();
-            players[i].playerID = i;
-        }
-    }
-
-    /*
-    Go to the next players turn, reset to the first if at the end
+    Creates a clone of a Player[] array with cloned players
      */
-    public static void advanceTurn() {
-        if (activePlayer < players.length - 1) {
-            activePlayer++;
-            return;
+    public static Player[] deepClone(Player[] players){
+        Player[] newPlayers = new Player[players.length];
+        for (int i = 0; i < players.length; i++){
+            newPlayers[i] = players[i].clone();
         }
-        activePlayer = 0;
+        return newPlayers;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() != Player.class) return false; // Cannot be cast to Player
+        Player otherPlayer = (Player) obj;
+        return (otherPlayer.playerID == playerID);
+    }
+
+
+    public static String playersToString(Player[] players){
+        StringBuilder builder = new StringBuilder("Players:\n");
+        for (Player player : players){
+            builder.append(player.getClass())
+                    .append(" ")
+                    .append(player.playerID)
+                    .append(", ");
+        }
+        return builder.toString();
+    }
+
+    public Player clone(){
+        return new Player(this.playerID);
+    }
+
+    public String getPlayerType(){
+        return "Player";
+    }
+
+    public static int getHumansInPlayers(Player[] players){
+        int count = 0;
+        for (Player player : players){
+            if (player.getPlayerType().equals("Player")) count++;
+        }
+        return count;
+    } // TODO this needs to change when move to alternating player types
 }
