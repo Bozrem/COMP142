@@ -145,4 +145,10 @@ public class Pile {
         }
         return false;
     }
+
+    public static int pilesTotal(Pile[] piles){
+        int count = 0;
+        for (Pile pile : piles) count += pile.getCount();
+        return count;
+    }
 }

@@ -72,8 +72,8 @@ public class ParanoidMinimaxTree {
 
             if (!arePilesDuplicates) {
                 // Only create a child if some variation of the piles does not already exist
-                subTrees.add(new ParanoidMinimaxTree(pilesAfterMove, move, Player.getNextPlayer(activePlayer, players), treeID, depthFromCurrent + 1, computer, players));
-            }
+                subTrees.add(new ParanoidMinimaxTree(pilesAfterMove, move, Player.getNextPlayer(activePlayer, players), treeID, depthFromCurrent + Player.getHumansInPlayers(players), computer, players));
+            } // Depth will need to change if a different initialization order is done
         }
         getStrength();
     }
@@ -106,8 +106,8 @@ public class ParanoidMinimaxTree {
     */
     public int getStrength() {
         if (strength != 0) return strength;
-        if (subTrees.isEmpty()) {
-            // Having no children means that this move doesn't have any other valid moves after, and is losing
+        if (Pile.pilesTotal(piles) == 1) {
+            // Only 1 stick left means it loses
             return strengthModifier(); // -1 if computer lost, 1 if other lost
         }
         int bestStrength = 0;
@@ -177,8 +177,10 @@ public class ParanoidMinimaxTree {
        Returns: int, the strength for the leaf node
     */
     private int strengthModifier() {
-        if (activePlayer.playerID == computer.playerID) return 1; // Empty piles given to computer, opponent before them lost
-        return -1; // Computer lost on the round before
+        if (activePlayer.playerID == computer.playerID){
+            return -1; // Empty piles given to computer, opponent before them lost
+        }
+        return 1; // Computer lost on the round before
     }
 
     /*

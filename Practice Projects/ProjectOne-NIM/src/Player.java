@@ -110,4 +110,12 @@ public class Player {
     public String getPlayerType(){
         return "Player";
     }
+
+    public static int getHumansInPlayers(Player[] players){
+        int count = 0;
+        for (Player player : players){
+            if (player.getPlayerType().equals("Player")) count++;
+        }
+        return count;
+    } // TODO this needs to change when move to alternating player types
 }

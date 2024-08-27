@@ -13,8 +13,10 @@ public class Computer extends Player {
     @Override
     public Move getMove(GameObject game) {
         buildTree(game);
-        //TreeViewer viewer = new TreeViewer(currentTree);
-        //viewer.browseTree();
+        if (Main.debugMode){
+            TreeViewer viewer = new TreeViewer(currentTree);
+            viewer.browseTree();
+        }
         Move move = currentTree.getMove();
         System.out.println("Evaluated " + ParanoidMinimaxTree.totalNodes + " futures, moved towards strength of " + (currentTree.strength - 2));
         return move;
