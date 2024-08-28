@@ -73,13 +73,7 @@ Being that the algorithm plays considering all other players as enemies, it cann
 Take the following NeoNim game as an example:
 * The piles are 3, 4, 0
   * It is the Algorithms turn, with two other players to follow.
-  * In its current paranoid state, the computer thinks it loses in 7 moves, and takes a stick from Pile 1 to delay its loss.
-* The piles are 2, 4, 0
-  * It is the first players turn
-  * A human sees the advantage of mutual interest
-    * If the first player takes the 4, it leaves two sticks, guaranteeing that loss for a different player is within 2 moves
-    * 
-### Multiplayer Bugs
-Similar to Mutual interests, it doesn't see that it can force a hand with multiple opponents.\
-When given 2, 4 and two other players to follow, instead of picking the 4 and guaranteeing safety, 
-it thinks it is losing in 7 moves and takes a stick from the first pile, instead giving opponents a way to team up and win
+  * In its current paranoid state, the computer thinks it loses in 6 moves, and takes a stick from Pile 1 to delay its loss.
+
+If the Algorithm understood mutual interest, it would want to take the 4 so that one person could take 2 and another loses.
+While trusting other players with mutual interest opens a vulnerability for itself, it would result in victory if the other player could play correctly.
