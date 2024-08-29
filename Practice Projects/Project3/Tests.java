@@ -1,3 +1,5 @@
+package Project3;
+
 import java.awt.*;
 
 public class Tests {

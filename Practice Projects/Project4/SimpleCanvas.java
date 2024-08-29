@@ -1,3 +1,5 @@
+package Project4;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -12,8 +14,8 @@ import java.net.URL;
  */
 public class SimpleCanvas {
     private JFrame frame;
-    private Graphics2D onscreenGraphics;
-    private BufferedImage onscreenImage;
+    private Graphics2D onscreenGraphics, offscreenGraphics;
+    private BufferedImage onscreenImage, offscreenImage;
     //private Color penColor;
     private int height, width;
     private Color bgColor = Color.WHITE;
@@ -40,20 +42,22 @@ public class SimpleCanvas {
                 frame = new JFrame(title);
                 frame.setVisible(false);
                 onscreenImage = new BufferedImage(2 * width, 2 * height, BufferedImage.TYPE_INT_ARGB);
+                offscreenImage = new BufferedImage(2 * width, 2 * height, BufferedImage.TYPE_INT_ARGB);
                 onscreenGraphics = onscreenImage.createGraphics();
+                offscreenGraphics = offscreenImage.createGraphics();
                 onscreenGraphics.scale(2, 2);
 
                 // add antialiasing
                 RenderingHints hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING,
                         RenderingHints.VALUE_ANTIALIAS_ON);
                 hints.put(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-                onscreenGraphics.addRenderingHints(hints);
+                offscreenGraphics.addRenderingHints(hints);
 
                 // clear screen
-                onscreenGraphics.setColor(bgColor);
-                onscreenGraphics.fillRect(0, 0, width, height);
+                offscreenGraphics.setColor(bgColor);
+                offscreenGraphics.fillRect(0, 0, width, height);
                 //System.out.println("painted BG");
-                onscreenGraphics.setColor(Color.BLACK);
+                offscreenGraphics.setColor(Color.BLACK);
 
                 // frame stuff
                 RetinaImageIcon icon = new RetinaImageIcon(onscreenImage);
@@ -139,11 +143,10 @@ public class SimpleCanvas {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                Color saveColor = onscreenGraphics.getColor();
-                onscreenGraphics.setColor(bgColor);
-                onscreenGraphics.fillRect(0, 0, width, height);
-                onscreenGraphics.setColor(saveColor);
-
+                Color saveColor = offscreenGraphics.getColor();
+                offscreenGraphics.setColor(bgColor);
+                offscreenGraphics.fillRect(0, 0, width, height);
+                offscreenGraphics.setColor(saveColor);
             }
         });
     }
@@ -155,7 +158,7 @@ public class SimpleCanvas {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                onscreenGraphics.drawOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
+                offscreenGraphics.drawOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
                 //frame.repaint();
             }
         });
@@ -169,7 +172,7 @@ public class SimpleCanvas {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                onscreenGraphics.drawOval(centerX - radiusX, centerY - radiusY, radiusX * 2, radiusY * 2);
+                offscreenGraphics.drawOval(centerX - radiusX, centerY - radiusY, radiusX * 2, radiusY * 2);
                 //frame.repaint();
             }
         });
@@ -183,7 +186,7 @@ public class SimpleCanvas {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                onscreenGraphics.drawRect(topLeftX, topLeftY, width, height);
+                offscreenGraphics.drawRect(topLeftX, topLeftY, width, height);
                 //frame.repaint();
             }
         });
@@ -193,7 +196,7 @@ public class SimpleCanvas {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                onscreenGraphics.drawPolygon(xPoints, yPoints, xPoints.length);
+                offscreenGraphics.drawPolygon(xPoints, yPoints, xPoints.length);
                 //frame.repaint();
             }
         });
@@ -203,7 +206,7 @@ public class SimpleCanvas {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                onscreenGraphics.fillPolygon(xPoints, yPoints, xPoints.length);
+                offscreenGraphics.fillPolygon(xPoints, yPoints, xPoints.length);
                 //frame.repaint();
             }
         });
@@ -217,7 +220,7 @@ public class SimpleCanvas {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                onscreenGraphics.fillOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
+                offscreenGraphics.fillOval(centerX - radius, centerY - radius, radius * 2, radius * 2);
                 //onscreenImage.
                 //frame.repaint();
             }
@@ -232,7 +235,7 @@ public class SimpleCanvas {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                onscreenGraphics.fillOval(centerX - radiusX, centerY - radiusY, radiusX * 2, radiusY * 2);
+                offscreenGraphics.fillOval(centerX - radiusX, centerY - radiusY, radiusX * 2, radiusY * 2);
                 //onscreenImage.
                 //frame.repaint();
             }
@@ -247,7 +250,7 @@ public class SimpleCanvas {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                onscreenGraphics.fillRect(topLeftX, topLeftY, width, height);
+                offscreenGraphics.fillRect(topLeftX, topLeftY, width, height);
                 //onscreenImage.
                 //frame.repaint();
             }
@@ -261,7 +264,7 @@ public class SimpleCanvas {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                onscreenGraphics.drawLine(x1, y1, x2, y2);
+                offscreenGraphics.drawLine(x1, y1, x2, y2);
             }
         });
     }
@@ -289,10 +292,10 @@ public class SimpleCanvas {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                Font currentFont = onscreenGraphics.getFont();
+                Font currentFont = offscreenGraphics.getFont();
                 Font newFont = new Font(currentFont.getFontName(), currentFont.getStyle(), fontSize);
-                onscreenGraphics.setFont(newFont);
-                onscreenGraphics.drawString(text, x, y);
+                offscreenGraphics.setFont(newFont);
+                offscreenGraphics.drawString(text, x, y);
             }
         });
     }
@@ -305,16 +308,16 @@ public class SimpleCanvas {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                Font currentFont = onscreenGraphics.getFont();
+                Font currentFont = offscreenGraphics.getFont();
                 Font newFont = new Font(currentFont.getFontName(), currentFont.getStyle(), fontSize);
-                onscreenGraphics.setFont(newFont);
+                offscreenGraphics.setFont(newFont);
 
-                FontMetrics metrics = onscreenGraphics.getFontMetrics(newFont);
+                FontMetrics metrics = offscreenGraphics.getFontMetrics(newFont);
                 int stringWidth = metrics.stringWidth(text);
                 int stringHeight = metrics.getHeight();
                 //System.out.println(stringWidth + " " + stringHeight);
 
-                onscreenGraphics.drawString(text, x - stringWidth / 2, y + stringHeight / 2 - metrics.getAscent() / 2);
+                offscreenGraphics.drawString(text, x - stringWidth / 2, y + stringHeight / 2 - metrics.getAscent() / 2);
             }
         });
     }
@@ -326,7 +329,7 @@ public class SimpleCanvas {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                onscreenGraphics.setStroke(new BasicStroke(size));
+                offscreenGraphics.setStroke(new BasicStroke(size));
             }
         });
     }
@@ -349,8 +352,8 @@ public class SimpleCanvas {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                //onscreenGraphics.drawImage(image, (int) Math.round(xs - ws/2.0), (int) Math.round(ys - hs/2.0), null);
-                onscreenGraphics.drawImage(image, x, y, null);
+                //offscreenGraphics.drawImage(image, (int) Math.round(xs - ws/2.0), (int) Math.round(ys - hs/2.0), null);
+                offscreenGraphics.drawImage(image, x, y, null);
                 //frame.repaint();
             }
         });
@@ -364,7 +367,7 @@ public class SimpleCanvas {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                onscreenGraphics.setColor(c);
+                offscreenGraphics.setColor(c);
             }
         });
     }
@@ -390,7 +393,7 @@ public class SimpleCanvas {
             SwingUtilities.invokeAndWait(new Runnable() {
                 @Override
                 public void run() {
-                    answer[0] = new Color(onscreenImage.getRGB(2 * x, 2 * y), true);
+                    answer[0] = new Color(offscreenImage.getRGB(2 * x, 2 * y), true);
                 }
             });
         } catch (InterruptedException | InvocationTargetException e) {
@@ -406,7 +409,7 @@ public class SimpleCanvas {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                onscreenImage.setRGB(2 * x, 2 * y, c.getRGB());
+                offscreenImage.setRGB(2 * x, 2 * y, c.getRGB());
                 //frame.repaint();
             }
         });
@@ -494,6 +497,8 @@ public class SimpleCanvas {
             @Override
             public void run() {
                 //System.out.println("EDT: repaint from update");
+                onscreenGraphics.drawImage(offscreenImage, 0, 0, null);
+                //frame.repaint();
                 frame.repaint();
             }
         });

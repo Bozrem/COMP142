@@ -1,3 +1,5 @@
+package Project3;
+
 /**
  * A RotationAnimation is a rotation applied to a ComboPolygon that takes rotates the ComboPolygon around
  * an (a, b) point in the plane, rotates a certain number of degrees, and starts and ends at specific moments in time.

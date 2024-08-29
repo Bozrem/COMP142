@@ -1,3 +1,5 @@
+package Project3;
+
 /**
  * An AnimationSequence is a collection of animations.  Each animation is either a translation or
  * rotation applied to a ComboPolygon.  Because each animation starts and ends at a specific moment

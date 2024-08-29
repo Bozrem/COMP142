@@ -1,3 +1,5 @@
+package Project3;
+
 /**
  * A TranslationAnimation is a translation applied to a ComboPolygon that takes moves the ComboPolygon a certain
  * distance in the x and y directions, and starts and ends at specific moments in time.

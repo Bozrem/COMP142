@@ -1,6 +1,7 @@
+package Project4;
+
 import java.awt.*;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Maze {
