@@ -103,4 +103,8 @@ Method Outline:
 * Coordinate(int x, int y)
   * Initialize a new coordinate
 * public static Coordinate FromPixelPos(int xPixel, int yPixel)
-  * Would translate the pixels from the getMouseClickX and Y functions of SimpleCanvas into a new 
+  * Would translate the pixels from the getMouseClickX and Y functions of SimpleCanvas into a new Coordinate
+
+## Resources
+[Java API - Color](https://docs.oracle.com/javase/7/docs/api/java/awt/Color.html)\
+Phillip Kirlin - [Project Resources](https://github.com/pkirlin/cs142-f22-proj2/)
